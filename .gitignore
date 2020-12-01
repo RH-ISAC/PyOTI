@@ -1,6 +1,9 @@
 # Secrets
 keys.py
 
+# TODO
+todo.txt
+
 # Byte-compiled
 __pycache__/
 *.py[cod]
