@@ -1,0 +1,16 @@
+# Secrets
+keys.py
+
+# Byte-compiled
+__pycache__/
+*.py[cod]
+*.py.class
+
+# PyCharm stuff
+.idea
+
+# Environments
+venv/
+
+# Mac Files
+.DS_Store
