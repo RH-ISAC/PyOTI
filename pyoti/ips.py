@@ -4,15 +4,13 @@ from nslookup import Nslookup
 
 from pyoti.classes import IPAddress
 from pyoti.exceptions import SpamhausZenError
-
-# TODO: create RBL (reputation block list) base class
-#       to have each block list class inherit from
+from pyoti.keys import abuseipdb
 
 
 class AbuseIPDB(IPAddress):
-    def __init__(self, api_key=None, api_url='https://api.abuseipdb.com/api/v2/check', ip=None, max_age=90):
+    def __init__(self, api_key=abuseipdb, api_url='https://api.abuseipdb.com/api/v2/check', max_age=90):
         self._max_age = max_age
-        IPAddress.__init__(self, api_key, api_url, ip)
+        IPAddress.__init__(self, api_key, api_url)
 
     @property
     def max_age(self):

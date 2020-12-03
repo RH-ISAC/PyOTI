@@ -65,17 +65,17 @@ class URLhaus(Domain, FileHash, IPAddress, URL):
 
 
 class VirusTotal(Domain, FileHash, IPAddress, URL):
-    def __init__(self, api_url="https://www.virustotal.com/vtapi/v2/"):
-        Domain.__init__(self, api_url=api_url)
-        FileHash.__init__(self, api_url=api_url)
-        IPAddress.__init__(self, api_url=api_url)
-        URL.__init__(self, api_url=api_url)
+    def __init__(self, api_key=virustotal, api_url="https://www.virustotal.com/vtapi/v2/"):
+        Domain.__init__(self, api_key=api_key, api_url=api_url)
+        FileHash.__init__(self, api_key=api_key, api_url=api_url)
+        IPAddress.__init__(self, api_key=api_key, api_url=api_url)
+        URL.__init__(self, api_key=api_key, api_url=api_url)
 
     def check_domain(self):
         url = f'{self.api_url}domain/report'
         if self.domain:
             params = {
-                'apikey': virustotal,
+                'apikey': self.api_key,
                 'domain': self.domain
             }
             response = requests.request("GET", url=url, params=params)
@@ -88,14 +88,14 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
         url = f'{self.api_url}file/report'
         if get_hash_type(self.file_hash) == 'MD5' or 'SHA-1' or 'SHA-256':
             params = {
-                'apikey': virustotal,
+                'apikey': self.api_key,
                 'resource': self.file_hash
             }
             if allinfo:
                 params['allinfo'] = True
         elif not self.file_hash and scan_id:
             params = {
-                'apikey': virustotal,
+                'apikey': self.api_key,
                 'resource': scan_id
             }
             if allinfo:
@@ -111,7 +111,7 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
         url = f'{self.api_url}ip-address/report'
         if self.ip:
             params = {
-                'apikey': virustotal,
+                'apikey': self.api_key,
                 'ip': self.ip
             }
             response = requests.request("GET", url=url, params=params)
@@ -124,14 +124,14 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
         url = f'{self.api_url}url/report'
         if self.url:
             params = {
-                'apikey': virustotal,
+                'apikey': self.api_key,
                 'resource': self.url
             }
             if allinfo:
                 params['allinfo'] = True
         elif not self.url and scan_id:
             params = {
-                'apikey': virustotal,
+                'apikey': self.api_key,
                 'resource': scan_id
             }
             if allinfo:

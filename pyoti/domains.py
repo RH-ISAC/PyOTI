@@ -32,6 +32,9 @@ class CheckDMARC(Domain):
 
 
 class IrisInvestigate(Domain):
+    def __init__(self, api_key=domaintools):
+        Domain.__init__(self, api_key)
+
     def check_domain(self):
         credentials = self._api_key.split(":")
         api = API(credentials[0], credentials[1])
@@ -41,12 +44,12 @@ class IrisInvestigate(Domain):
 
 
 class WhoisXML(Domain):
-    def __init__(self, api_url='https://www.whoisxmlapi.com/whoisserver/WhoisService'):
-        Domain.__init__(self, api_url=api_url)
+    def __init__(self, api_key=whoisxml, api_url='https://www.whoisxmlapi.com/whoisserver/WhoisService'):
+        Domain.__init__(self, api_key=api_key, api_url=api_url)
 
     def check_domain(self):
         params = {
-            'apiKey': whoisxml,
+            'apiKey': self.api_key,
             'domainName': self.domain,
             'outputFormat': 'JSON'
         }

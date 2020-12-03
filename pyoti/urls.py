@@ -4,13 +4,14 @@ import requests
 
 from pyoti.classes import URL
 from pyoti.exceptions import GSBPermissionDenied, GSBInvalidAPIKey
+from pyoti.keys import googlesafebrowsing, phishtank
 from pyoti.utils import xml_to_json
 
 
 class Phishtank(URL):
-    def __init__(self, api_key=None, api_url="http://checkurl.phishtank.com/checkurl/", url=None, username=None):
+    def __init__(self, api_key=phishtank, api_url="http://checkurl.phishtank.com/checkurl/", username=None):
         self._username = username
-        URL.__init__(self, api_key, api_url, url)
+        URL.__init__(self, api_key, api_url)
 
     @property
     def username(self):
@@ -26,19 +27,18 @@ class Phishtank(URL):
         base64_new_check = base64_bytes.decode('ascii')
         self._api_url += base64_new_check
         headers = {
-            'app_key': self._api_key,
-            'User-agent': f"phishtank/{self._username}"
+            'app_key': self.api_key,
+            'User-agent': f"phishtank/{self.username}"
         }
 
-        response = requests.request("POST", url=self._api_url, headers=headers)
+        response = requests.request("POST", url=self.api_url, headers=headers)
 
         return xml_to_json(response.text)
 
 
 class GoogleSafeBrowsing(URL):
-    def __init__(self, url=None, api_key=None, api_url='https://safebrowsing.googleapis.com/v4/threatMatches:find'):
-        self.api_url = api_url
-        URL.__init__(self, api_key, api_url, url)
+    def __init__(self, api_key=googlesafebrowsing, api_url='https://safebrowsing.googleapis.com/v4/threatMatches:find'):
+        URL.__init__(self, api_key, api_url)
 
     def check_url(self, platforms=["ANY_PLATFORM"]):
         data = {
@@ -57,7 +57,7 @@ class GoogleSafeBrowsing(URL):
                     ],
                 "platformTypes": platforms,
                 "threatEntryTypes": ["URL"],
-                "threatEntries": [{'url': self._url}]
+                "threatEntries": [{'url': self.url}]
             }
         }
 
@@ -66,7 +66,7 @@ class GoogleSafeBrowsing(URL):
         response = requests.request("POST",
                                     url=self.api_url,
                                     data=json.dumps(data),
-                                    params={'key': self._api_key},
+                                    params={'key': self.api_key},
                                     headers=headers)
 
         if response.status_code == 200:
