@@ -21,3 +21,18 @@ class SpamhausZenError(PyOTIError):
 class URLhausHashError(PyOTIError):
     """Exception raised for invalid hash type for URLhaus query."""
     pass
+
+class VirusTotalDomainError(PyOTIError):
+    """Exception raised for invalid domain for VirusTotal query."""
+
+class VirusTotalHashError(PyOTIError):
+    """Exception raised for invalid hash type or scan_id for VirusTotal query."""
+    pass
+
+class VirusTotalIPError(PyOTIError):
+    """Exception raised for invalid IP address for VirusTotal query."""
+    pass
+
+class VirusTotalURLError(PyOTIError):
+    """Exception raised for invalid URL for VirusTotal query."""
+    pass
