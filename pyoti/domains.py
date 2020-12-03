@@ -1,10 +1,11 @@
 import json
+import requests
 import subprocess
 
 from domaintools import API
 
 from pyoti.classes import Domain
-from pyoti.keys import domaintools
+from pyoti.keys import domaintools, whoisxml
 from pyoti.utils import pypkg_exists
 
 
@@ -37,3 +38,19 @@ class IrisInvestigate(Domain):
         iris = api.iris_investigate(domains=self.domain)
 
         return iris.get('response')
+
+
+class WhoisXML(Domain):
+    def __init__(self, api_url='https://www.whoisxmlapi.com/whoisserver/WhoisService'):
+        Domain.__init__(self, api_url=api_url)
+
+    def check_domain(self):
+        params = {
+            'apiKey': whoisxml,
+            'domainName': self.domain,
+            'outputFormat': 'JSON'
+        }
+
+        response = requests.request("GET", url=self.api_url, params=params)
+
+        return response.json()
