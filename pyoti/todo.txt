@@ -1,2 +1,0 @@
-# AbuseIPDB:
-#     -75-100% should be the recommended range for denial of service

@@ -74,12 +74,3 @@ class URL(API):
     @url.setter
     def url(self, value):
         self._url = value
-
-
-class Multi(Domain, FileHash, IPAddress, URL):
-    def __init__(self, api_key=None, api_url=None, domain=None, file_hash=None, ip=None, url=None):
-        API.__init__(self, api_key, api_url)
-        Domain.__init__(self, domain)
-        IPAddress.__init__(self, ip)
-        FileHash.__init__(self, file_hash)
-        URL.__init__(self, url)
