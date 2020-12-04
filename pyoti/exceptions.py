@@ -13,6 +13,10 @@ class GSBInvalidAPIKey(PyOTIError):
     """Exception raised for Google Safe Browsing API invalid API key error."""
     pass
 
+class MaltiverseIOCError(PyOTIError):
+    """Exception raised for MaltiverseIOC errors."""
+    pass
+
 
 class SpamhausZenError(PyOTIError):
     """Exception raised for any special codes returned that indicates an error in query."""
