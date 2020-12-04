@@ -1,9 +1,41 @@
+import pypssl
 import requests
 
 from pyoti.classes import Domain, FileHash, IPAddress, URL
 from pyoti.exceptions import URLhausHashError, VirusTotalDomainError, VirusTotalHashError, VirusTotalIPError, VirusTotalURLError
-from pyoti.keys import virustotal
+from pyoti.keys import circlpassive, virustotal
 from pyoti.utils import get_hash_type
+
+
+class CIRCLPSSL(FileHash, IPAddress):
+    def __init__(self, api_key=circlpassive):
+        FileHash.__init__(self, api_key=api_key)
+        IPAddress.__init__(self, api_key=api_key)
+
+    def _pyssl(self):
+        credentials = self.api_key.split(":")
+        pssl = pypssl.PyPSSL(basic_auth=(credentials[0], credentials[1]))
+
+        return pssl
+
+    def check_ip(self):
+        pssl = self._pyssl()
+        query = pssl.query(self.ip)
+
+        return query
+
+    def check_hash(self):
+        pssl = self._pyssl()
+        cquery = pssl.query_cert(self.file_hash)
+
+        return cquery
+
+    def fetch_cert(self):
+        pssl = self._pyssl()
+        cfetch = pssl.fetch_cert(self.file_hash)
+
+        # still need to verify if this returns a list or dict
+        return cfetch
 
 
 class URLhaus(Domain, FileHash, IPAddress, URL):
