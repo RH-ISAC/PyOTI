@@ -1,11 +1,12 @@
 import json
+import pypdns
 import requests
 import subprocess
 
 from domaintools import API
 
 from pyoti.classes import Domain
-from pyoti.keys import domaintools, whoisxml
+from pyoti.keys import circlpassive, domaintools, whoisxml
 from pyoti.utils import pypkg_exists
 
 
@@ -31,12 +32,25 @@ class CheckDMARC(Domain):
         return dmarc_json
 
 
+class CIRCLPDNS(Domain):
+    def __init__(self, api_key=circlpassive):
+        Domain.__init__(self, api_key=api_key)
+
+    def check_domain(self):
+        credentials = self.api_key.split(":")
+        pdns = pypdns.PyPDNS(basic_auth=(credentials[0], credentials[1]))
+        query = pdns.query(self.domain)
+
+        # still need to verify if this returns a list or dict
+        return query
+
+
 class IrisInvestigate(Domain):
     def __init__(self, api_key=domaintools):
         Domain.__init__(self, api_key)
 
     def check_domain(self):
-        credentials = self._api_key.split(":")
+        credentials = self.api_key.split(":")
         api = API(credentials[0], credentials[1])
         iris = api.iris_investigate(domains=self.domain)
 
