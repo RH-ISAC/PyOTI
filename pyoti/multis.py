@@ -1,9 +1,11 @@
 import pypssl
 import requests
 
+from maltiverse import Maltiverse
+
 from pyoti.classes import Domain, FileHash, IPAddress, URL
-from pyoti.exceptions import URLhausHashError, VirusTotalDomainError, VirusTotalHashError, VirusTotalIPError, VirusTotalURLError
-from pyoti.keys import circlpassive, virustotal
+from pyoti.exceptions import MaltiverseIOCError, URLhausHashError, VirusTotalDomainError, VirusTotalHashError, VirusTotalIPError, VirusTotalURLError
+from pyoti.keys import circlpassive, maltiverse, virustotal
 from pyoti.utils import get_hash_type
 
 
@@ -36,6 +38,58 @@ class CIRCLPSSL(FileHash, IPAddress):
 
         # still need to verify if this returns a list or dict
         return cfetch
+
+
+class MaltiverseIOC(Domain, FileHash, IPAddress, URL):
+    def __init__(self, api_key=maltiverse):
+        Domain.__init__(self, api_key=api_key)
+        FileHash.__init__(self, api_key=api_key)
+        IPAddress.__init__(self, api_key=api_key)
+        URL.__init__(self, api_key=api_key)
+
+    def _api(self, auth_token):
+        api = Maltiverse(auth_token=auth_token)
+        return api
+
+    def check_domain(self):
+        if self.domain:
+            api = self._api(self.api_key)
+            result = api.hostname_get(self.domain)
+
+            return result
+        else:
+            raise MaltiverseIOCError("/hostname/ endpoint requires a valid domain!")
+
+    def check_hash(self):
+        api = self._api(self.api_key)
+        if get_hash_type(self.file_hash) == 'MD5':
+            result = api.sample_get_by_md5(self.file_hash)
+
+            return result
+        elif get_hash_type(self.file_hash) == 'SHA256':
+            result = api.sample_get(self.file_hash)
+
+            return result
+        else:
+            raise MaltiverseIOCError("/sample/ endpoint requires a valid MD5 or SHA256 hash!")
+
+    def check_ip(self):
+        if self.ip:
+            api = self._api(self.api_key)
+            result = api.ip_get(self.ip)
+
+            return result
+        else:
+            raise MaltiverseIOCError('/ip/ endpoint requires a valid IPv4 address!')
+
+    def check_url(self):
+        if self.url:
+            api = self._api(self.api_key)
+            result =  api.url_get(self.url)
+
+            return result
+        else:
+            raise MaltiverseIOCError("/url/ endpoint requires a valid URL!")
 
 
 class URLhaus(Domain, FileHash, IPAddress, URL):
