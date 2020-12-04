@@ -1,3 +1,5 @@
+import aiodns
+import asyncio
 import requests
 
 from nslookup import Nslookup
@@ -38,7 +40,7 @@ class AbuseIPDB(IPAddress):
 
 class SpamhausZen(IPAddress):
     def check_ip(self):
-        answer = self._lookup_ip()
+        answer = self._resolve_ip()
         if answer:
             results = {}
             if answer[0] in ['127.0.0.2', '127.0.0.3', '127.0.0.9']:
@@ -64,9 +66,27 @@ class SpamhausZen(IPAddress):
 
         return rev
 
-    def _lookup_ip(self):
+    # depreciating in favor of aiodns library
+    def _ns_resolve_ip(self):
         dns = Nslookup(dns_servers=["1.1.1.1"])
         domain = f"{self._reverse_ip()}.zen.spamhaus.org"
         a_record = dns.dns_lookup(domain)
 
         return a_record.answer
+
+    def _resolve_ip(self):
+        try:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            resolver = aiodns.DNSResolver(loop=loop)
+
+            async def query(name, query_type):
+                return await resolver.query(name, query_type)
+
+            coro = query(f'{self._reverse_ip()}.zenspamhaus.org', 'A')
+            result = loop.run_until_complete(coro)
+
+            return result
+
+        except aiodns.error.DNSError as e:
+            return e
