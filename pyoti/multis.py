@@ -2,10 +2,11 @@ import pypssl
 import requests
 
 from maltiverse import Maltiverse
+from OTXv2 import OTXv2, IndicatorTypes
 
 from pyoti.classes import Domain, FileHash, IPAddress, URL
-from pyoti.exceptions import MaltiverseIOCError, URLhausHashError, VirusTotalDomainError, VirusTotalHashError, VirusTotalIPError, VirusTotalURLError
-from pyoti.keys import circlpassive, maltiverse, virustotal
+from pyoti.exceptions import MaltiverseIOCError, OTXError, URLhausHashError, VirusTotalDomainError, VirusTotalHashError, VirusTotalIPError, VirusTotalURLError
+from pyoti.keys import circlpassive, maltiverse, otx, virustotal
 from pyoti.utils import get_hash_type
 
 
@@ -90,6 +91,50 @@ class MaltiverseIOC(Domain, FileHash, IPAddress, URL):
             return result
         else:
             raise MaltiverseIOCError("/url/ endpoint requires a valid URL!")
+
+
+class OTX(Domain, FileHash, IPAddress):
+    def _api(self):
+        api = OTXv2(api_key=otx)
+
+        return api
+
+    def check_domain(self):
+        api = self._api()
+        if self.domain:
+            return api.get_indicator_details_full(IndicatorTypes.DOMAIN, self.domain)
+
+        else:
+            raise OTXError("/api/v1/indicators/domain/{domain}/{section} endpoint requires a valid domain!")
+
+    def check_hash(self):
+        api = self._api()
+
+        if get_hash_type(self.file_hash) == 'MD5':
+            return api.get_indicator_details_full(IndicatorTypes.FILE_HASH_MD5, self.file_hash)
+
+        elif get_hash_type(self.file_hash) == 'SHA-1':
+            return api.get_indicator_details_full(IndicatorTypes.FILE_HASH_SHA1, self.file_hash)
+
+        elif get_hash_type(self.file_hash) == 'SHA-256':
+            return api.get_indicator_details_full(IndicatorTypes.FILE_HASH_SHA256, self.file_hash)
+
+        else:
+            raise OTXError("/api/v1/indicators/file/{file_hash}/{section} endpoint requires a valid MD5, SHA1 or SHA256 hash!")
+
+    def check_ip(self):
+        api = self._api()
+        if self.ip:
+            return api.get_indicator_details_full(IndicatorTypes.IPv4, self.ip)
+        else:
+            raise OTXError("/api/v1/indicators/IPv4/{ip}/{section} endpoint requires a valid IPv4 address!")
+
+    def check_url(self):
+        api = self._api()
+        if self.url:
+            return api.get_indicator_details_full(IndicatorTypes.URL, self.url)
+        else:
+            raise OTXError("/api/v1/indicators/url/{url}/{section} endpoint requires a valid URL!")
 
 
 class URLhaus(Domain, FileHash, IPAddress, URL):
