@@ -18,6 +18,10 @@ class MaltiverseIOCError(PyOTIError):
     pass
 
 
+class OTXError(PyOTIError):
+    """Exception raised for AlienVault OTX errors."""
+
+
 class SpamhausZenError(PyOTIError):
     """Exception raised for any special codes returned that indicates an error in query."""
     pass
