@@ -6,7 +6,7 @@ from OTXv2 import OTXv2, IndicatorTypes
 
 from pyoti.classes import Domain, FileHash, IPAddress, URL
 from pyoti.exceptions import MaltiverseIOCError, OTXError, URLhausHashError, VirusTotalDomainError, VirusTotalHashError, VirusTotalIPError, VirusTotalURLError
-from pyoti.keys import circlpassive, maltiverse, otx, virustotal
+from pyoti.keys import circlpassive, maltiverse, onyphe, otx, virustotal
 from pyoti.utils import get_hash_type
 
 
@@ -91,6 +91,34 @@ class MaltiverseIOC(Domain, FileHash, IPAddress, URL):
             return result
         else:
             raise MaltiverseIOCError("/url/ endpoint requires a valid URL!")
+
+
+class Onyphe(Domain, IPAddress):
+    def __init__(self, api_key=onyphe, api_url="https://www.onyphe.io/api/v2/"):
+        Domain.__init__(self, api_key=api_key, api_url=api_url)
+        IPAddress.__init__(self, api_key=api_key, api_url=api_url)
+
+    def _api_get(self, endpoint):
+        headers = {
+            'Authorization': f"apikey {self.api_key}",
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.request("GET", url=endpoint, headers=headers)
+
+        return response.json()
+
+    def check_domain(self):
+        url = f"{self.api_url}summary/domain/{self.domain}"
+        response = self._api_get(url)
+
+        return response
+
+    def check_ip(self):
+        url = f"{self.api_url}summary/ip/{self.ip}"
+        response = self._api_get(url)
+
+        return response
 
 
 class OTX(Domain, FileHash, IPAddress):
