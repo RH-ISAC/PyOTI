@@ -15,12 +15,16 @@ HASH_TYPE = {
 }
 
 def get_hash_type(file_hash):
+    """Determines File Hash type"""
+
     for regex, algorithm in HASH_TYPE.items():
         if regex.match(file_hash):
 
             return algorithm
 
 def pypkg_exists(pypkg):
+    """Checks if python package is installed"""
+
     if not which(pypkg):
         raise PyOTIError(f"{pypkg} not installed!")
 
@@ -31,6 +35,8 @@ def time_since_seconds(seconds):
     return str(timedelta(seconds=seconds))
 
 def xml_to_json(xml_object):
+    """Convert XML to JSON"""
+
     xml_dict = xmltodict.parse(xml_object)
     json_data = json.dumps(xml_dict)
     return json_data

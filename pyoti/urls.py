@@ -9,6 +9,12 @@ from pyoti.utils import xml_to_json
 
 
 class Phishtank(URL):
+    """Phishtank Anti-Phishing
+
+    Phishtank is a collaborative clearing house for data and information about
+    phishing on the internet.
+    """
+
     def __init__(self, api_key=phishtank, api_url="http://checkurl.phishtank.com/checkurl/", username=None):
         self._username = username
         URL.__init__(self, api_key, api_url)
@@ -22,6 +28,8 @@ class Phishtank(URL):
         self._username = value
 
     def check_url(self):
+        """Checks URL reputation"""
+
         new_check_bytes = self.url.encode('ascii')
         base64_bytes = base64.b64encode(new_check_bytes)
         base64_new_check = base64_bytes.decode('ascii')
@@ -37,10 +45,19 @@ class Phishtank(URL):
 
 
 class GoogleSafeBrowsing(URL):
+    """GoogleSafeBrowsing URL Blacklist
+
+    Google Safe Browsing is a blacklist service provided by Google that
+    provides lists of URLs for web resources that contain malware or phishing
+    content.
+    """
+
     def __init__(self, api_key=googlesafebrowsing, api_url='https://safebrowsing.googleapis.com/v4/threatMatches:find'):
         URL.__init__(self, api_key, api_url)
 
     def check_url(self, platforms=["ANY_PLATFORM"]):
+        """Checks URL reputation"""
+
         data = {
             "client": {
                 "clientId": "PyOTI",

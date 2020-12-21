@@ -1,4 +1,9 @@
 class API:
+    """Base API for PyOTI
+
+    :param api_key: API key of the endpoint to connect to
+    :param api_url: URL of the API endpoint to connect to
+    """
     def __init__(self, api_key=None, api_url=None):
         self._api_key = api_key
         self._api_url = api_url
@@ -21,6 +26,10 @@ class API:
 
 
 class Domain(API):
+    """Domain API for PyOTI
+
+    :param domain: Domain to lookup/scan
+    """
     def __init__(self, api_key=None, api_url=None, domain=None):
         self._domain = domain
         API.__init__(self, api_key, api_url)
@@ -35,6 +44,10 @@ class Domain(API):
 
 
 class FileHash(API):
+    """FileHash API for PyOTI
+
+        :param file_hash: File hash to lookup/scan
+        """
     def __init__(self, api_key=None, api_url=None, file_hash=None):
         self._file_hash = file_hash
         API.__init__(self, api_key, api_url)
@@ -49,6 +62,10 @@ class FileHash(API):
 
 
 class IPAddress(API):
+    """IPAddress API for PyOTI
+
+        :param ip: IP address to lookup/scan
+        """
     def __init__(self, api_key=None, api_url=None, ip=None):
         self._ip = ip
         API.__init__(self, api_key, api_url)
@@ -63,6 +80,10 @@ class IPAddress(API):
 
 
 class URL(API):
+    """URL API for PyOTI
+
+        :param url: URL to lookup/scan
+        """
     def __init__(self, api_key=None, api_url=None, url=None):
         self._url = url
         API.__init__(self, api_key, api_url)
