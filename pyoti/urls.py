@@ -61,7 +61,7 @@ class GoogleSafeBrowsing(URL):
     def __init__(self, api_key=googlesafebrowsing, api_url='https://safebrowsing.googleapis.com/v4/threatMatches:find'):
         URL.__init__(self, api_key, api_url)
 
-    def _api_post(self, endpoint, platforms=["ANY_PLATFORM"]):
+    def _api_post(self, endpoint, platforms):
         """POST request to API"""
 
         data = {
@@ -105,8 +105,12 @@ class GoogleSafeBrowsing(URL):
             raise GSBPermissionDenied(response.json()['error']['message'])
 
     def check_url(self, platforms=["ANY_PLATFORM"]):
-        """Checks URL reputation"""
+        """Checks URL reputation
 
-        response = self._api_post(self.api_url, platforms=platforms)
+        :param platforms: Default: ANY_PLATFORM. For all available options please see:
+        https://developers.google.com/safe-browsing/v4/reference/rest/v4/PlatformType
+        """
+
+        response = self._api_post(self.api_url, platforms)
 
         return response
