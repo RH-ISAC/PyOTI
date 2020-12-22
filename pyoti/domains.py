@@ -126,6 +126,6 @@ class WhoisXML(Domain):
     def check_domain(self):
         """Checks Domain reputation"""
 
-        response = self._api_get(self, self.api_url)
+        response = self._api_get(self.api_url)
 
         return response
