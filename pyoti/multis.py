@@ -173,7 +173,7 @@ class Onyphe(Domain, IPAddress):
         return response
 
 
-class OTX(Domain, FileHash, IPAddress):
+class OTX(Domain, FileHash, IPAddress, URL):
     """OTX Open Threat Exchange
 
     AlienVault OTX is a threat data platform that allows security researchers
