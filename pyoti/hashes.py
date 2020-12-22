@@ -22,7 +22,7 @@ class MalwareHashRegistry(FileHash):
         if dig:
             return_list = self._to_list(dig)
 
-            return self._to_json(return_list)
+            return self._to_dict(return_list)
 
     def _to_list(self, value):
         """Converts dig query to list"""
@@ -32,7 +32,7 @@ class MalwareHashRegistry(FileHash):
 
         return split
 
-    def _to_json(self, value):
+    def _to_dict(self, value):
         """Converts dig query list to dict"""
 
         result = {}
