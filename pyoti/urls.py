@@ -27,8 +27,8 @@ class Phishtank(URL):
     def username(self, value):
         self._username = value
 
-    def check_url(self):
-        """Checks URL reputation"""
+    def _api_post(self, endpoint):
+        """POST request to API"""
 
         new_check_bytes = self.url.encode('ascii')
         base64_bytes = base64.b64encode(new_check_bytes)
@@ -39,10 +39,16 @@ class Phishtank(URL):
             'User-agent': f"phishtank/{self.username}"
         }
 
-        response = requests.request("POST", url=self.api_url, headers=headers)
+        response = requests.request("POST", url=endpoint, headers=headers)
 
         return xml_to_json(response.text)
 
+    def check_url(self):
+        """Checks URL reputation"""
+
+        response = self._api_post(self.api_url)
+
+        return response
 
 class GoogleSafeBrowsing(URL):
     """GoogleSafeBrowsing URL Blacklist
@@ -55,8 +61,8 @@ class GoogleSafeBrowsing(URL):
     def __init__(self, api_key=googlesafebrowsing, api_url='https://safebrowsing.googleapis.com/v4/threatMatches:find'):
         URL.__init__(self, api_key, api_url)
 
-    def check_url(self, platforms=["ANY_PLATFORM"]):
-        """Checks URL reputation"""
+    def _api_post(self, endpoint, platforms=["ANY_PLATFORM"]):
+        """POST request to API"""
 
         data = {
             "client": {
@@ -81,7 +87,7 @@ class GoogleSafeBrowsing(URL):
         headers = {'Content-type': 'application/json'}
 
         response = requests.request("POST",
-                                    url=self.api_url,
+                                    url=endpoint,
                                     data=json.dumps(data),
                                     params={'key': self.api_key},
                                     headers=headers)
@@ -97,3 +103,10 @@ class GoogleSafeBrowsing(URL):
 
         elif response.status_code == 403:
             raise GSBPermissionDenied(response.json()['error']['message'])
+
+    def check_url(self, platforms=["ANY_PLATFORM"]):
+        """Checks URL reputation"""
+
+        response = self._api_post(self.api_url, platforms=platforms)
+
+        return response
