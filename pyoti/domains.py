@@ -52,6 +52,8 @@ class CIRCLPDNS(Domain):
         Domain.__init__(self, api_key=api_key)
 
     def _api(self):
+        """Instantiates PyPDNS API"""
+
         credentials = self.api_key.split(":")
         pdns = pypdns.PyPDNS(basic_auth=(credentials[0], credentials[1]))
 
