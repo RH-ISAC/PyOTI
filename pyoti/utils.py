@@ -28,6 +28,13 @@ def pypkg_exists(pypkg):
     if not which(pypkg):
         raise PyOTIError(f"{pypkg} not installed!")
 
+def split_eml_domain(email):
+    """Splits Domain from an Email Address"""
+
+    domain = email.split('@')[1]
+
+    return domain
+
 def time_since_epoch(epoch):
     return datetime.fromtimestamp(int(epoch)).strftime('%Y-%m-%d %H:%M:%S')
 
