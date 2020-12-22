@@ -33,15 +33,8 @@ class AbuseIPDB(IPAddress):
     def max_age(self, value):
         self._max_age = value
 
-    def check_ip(self):
-        """Checks IP reputation
-
-        The check endpoint (api.abuseipdb.com/api/v2/check) accepts a single IP
-        address (v4 or v6). Optionally you may set the max_age parameter to only
-        return reports within the last X number of days.
-        """
-
-        query = {
+    def _api_get(self, endpoint):
+        params = {
             'ipAddress': self.ip,
             'maxAgeInDays': self.max_age
         }
@@ -51,9 +44,21 @@ class AbuseIPDB(IPAddress):
             'Key': self.api_key
         }
 
-        response = requests.request("GET", url=self.api_url, headers=headers, params=query)
+        response = requests.request("GET", url=endpoint, headers=headers, params=params)
 
         return response.json()
+
+    def check_ip(self):
+        """Checks IP reputation
+
+        The check endpoint (api.abuseipdb.com/api/v2/check) accepts a single IP
+        address (v4 or v6). Optionally you may set the max_age parameter to only
+        return reports within the last X number of days.
+        """
+
+        response = self._api_get(self.api_url)
+
+        return response
 
 
 class SpamhausZen(IPAddress):
