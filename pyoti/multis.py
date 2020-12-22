@@ -20,7 +20,7 @@ class CIRCLPSSL(FileHash, IPAddress):
         FileHash.__init__(self, api_key=api_key)
         IPAddress.__init__(self, api_key=api_key)
 
-    def _pyssl(self):
+    def _api(self):
         """Instantiates PyPSSL API"""
 
         credentials = self.api_key.split(":")
@@ -34,7 +34,7 @@ class CIRCLPSSL(FileHash, IPAddress):
         Checks CIRCL Passive SSL for historical X.509 certificates for a given IP.
         """
 
-        pssl = self._pyssl()
+        pssl = self._api()
         query = pssl.query(self.ip)
 
         return query
@@ -46,7 +46,7 @@ class CIRCLPSSL(FileHash, IPAddress):
         certificate fingerprint.
         """
 
-        pssl = self._pyssl()
+        pssl = self._api()
         cquery = pssl.query_cert(self.file_hash)
 
         return cquery
@@ -58,7 +58,7 @@ class CIRCLPSSL(FileHash, IPAddress):
         given certificate fingerprint.
         """
 
-        pssl = self._pyssl()
+        pssl = self._api()
         cfetch = pssl.fetch_cert(self.file_hash)
 
         # still need to verify if this returns a list or dict
