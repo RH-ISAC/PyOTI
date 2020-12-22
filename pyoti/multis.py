@@ -316,14 +316,14 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
         IPAddress.__init__(self, api_key=api_key, api_url=api_url)
         URL.__init__(self, api_key=api_key, api_url=api_url)
 
-    def _api_get(self, endpoint, ioctype, iocvalue, allinfo=False):
+    def _api_get(self, endpoint, ioctype, iocvalue, allinfo):
         """GET request to API"""
 
         params = {
             'apikey': self.api_key,
             ioctype: iocvalue
         }
-        if allinfo:
+        if allinfo is True:
             params['allinfo'] = True
 
         response = requests.request("GET", url=endpoint, params=params)
@@ -331,28 +331,39 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
         return response.json()
 
     def check_domain(self, allinfo=False):
-        """Checks Domain reputation"""
+        """Checks Domain reputation
+
+        :param allinfo: Default: False. Set True if you have VirusTotal Premium API Key
+        """
 
         url = f'{self.api_url}domain/report'
-        response = self._api_get(url, 'domain', self.domain, allinfo=allinfo)
+        response = self._api_get(url, 'domain', self.domain, allinfo)
 
         return response
 
     def check_hash(self, allinfo=False, scan_id=None):
-        """Checks File Hash Reputation"""
+        """Checks File Hash Reputation
+
+        :param allinfo: Default: False. Set True if you have VirusTotal Premium API Key
+        :param scan_id: Default: None. Set if you want to lookup an already submitted
+        resource instead of looking up by file hash.
+        """
 
         url = f'{self.api_url}file/report'
         if get_hash_type(self.file_hash) == 'MD5' or 'SHA-1' or 'SHA-256':
-            response = self._api_get(url, 'resource', self.file_hash, allinfo=allinfo)
+            response = self._api_get(url, 'resource', self.file_hash, allinfo)
         elif not self.file_hash and scan_id:
-            response = self._api_get(url, 'resource', scan_id, allinfo=allinfo)
+            response = self._api_get(url, 'resource', scan_id, allinfo)
         else:
             raise VirusTotalHashError("/file/report endpoint requires a valid MD5/SHA1/SHA256 hash or scan_id!")
 
         return response
 
     def check_ip(self, allinfo=False):
-        """Checks IP reputation"""
+        """Checks IP reputation
+
+        :param allinfo: Default: False. Set True if you have VirusTotal Premium API Key
+        """
 
         url = f'{self.api_url}ip-address/report'
         if self.ip:
@@ -363,13 +374,18 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
             raise VirusTotalIPError("/ip-address/report endpoint requires a valid IP address!")
 
     def check_url(self, allinfo=False, scan_id=None):
-        """Checks URL reputation"""
+        """Checks URL reputation
+
+        :param allinfo: Default: False. Set True if you have VirusTotal Premium API Key
+        :param scan_id: Default: None. Set if you want to lookup an already submitted
+        resource instead of looking up by URL.
+        """
 
         url = f'{self.api_url}url/report'
         if self.url:
-            response = self._api_get(url, 'resource', self.url, allinfo=allinfo)
+            response = self._api_get(url, 'resource', self.url, allinfo)
         elif not self.url and scan_id:
-            response = self._api_get(url, 'resource', scan_id, allinfo=allinfo)
+            response = self._api_get(url, 'resource', scan_id, allinfo)
         else:
             raise VirusTotalURLError("/url/report endpoint requires a valid URL or scan_id!")
 
