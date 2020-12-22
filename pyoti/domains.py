@@ -51,14 +51,19 @@ class CIRCLPDNS(Domain):
     def __init__(self, api_key=circlpassive):
         Domain.__init__(self, api_key=api_key)
 
+    def _api(self):
+        credentials = self.api_key.split(":")
+        pdns = pypdns.PyPDNS(basic_auth=(credentials[0], credentials[1]))
+
+        return pdns
+
     def check_domain(self):
         """Checks domain reputation
 
         Checks CIRCL Passive DNS for historial DNS records for a given domain.
         """
 
-        credentials = self.api_key.split(":")
-        pdns = pypdns.PyPDNS(basic_auth=(credentials[0], credentials[1]))
+        pdns = self._api()
         query = pdns.query(self.domain)
 
         # still need to verify if this returns a list or dict
@@ -76,11 +81,18 @@ class IrisInvestigate(Domain):
     def __init__(self, api_key=domaintools):
         Domain.__init__(self, api_key)
 
-    def check_domain(self):
-        """Checks domain reputation"""
+    def _api(self):
+        """Instantiates Domaintools API"""
 
         credentials = self.api_key.split(":")
         api = API(credentials[0], credentials[1])
+
+        return api
+
+    def check_domain(self):
+        """Checks domain reputation"""
+
+        api = self._api()
         iris = api.iris_investigate(domains=self.domain)
 
         return iris.get('response')
@@ -98,8 +110,8 @@ class WhoisXML(Domain):
     def __init__(self, api_key=whoisxml, api_url='https://www.whoisxmlapi.com/whoisserver/WhoisService'):
         Domain.__init__(self, api_key=api_key, api_url=api_url)
 
-    def check_domain(self):
-        """Checks Domain reputation"""
+    def _api_get(self, endpoint):
+        """Get request to API"""
 
         params = {
             'apiKey': self.api_key,
@@ -107,6 +119,13 @@ class WhoisXML(Domain):
             'outputFormat': 'JSON'
         }
 
-        response = requests.request("GET", url=self.api_url, params=params)
+        response = requests.request("GET", url=endpoint, params=params)
 
         return response.json()
+
+    def check_domain(self):
+        """Checks Domain reputation"""
+
+        response = self._api_get(self, self.api_url)
+
+        return response
