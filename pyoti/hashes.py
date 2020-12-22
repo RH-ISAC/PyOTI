@@ -1,7 +1,7 @@
 import pydig
 
 from pyoti.classes import FileHash
-from pyoti.utils import time_since_epoch
+from pyoti.utils import get_hash_type, time_since_epoch
 
 
 class MalwareHashRegistry(FileHash):
@@ -18,11 +18,12 @@ class MalwareHashRegistry(FileHash):
         detection percentage of a given file hash.
         """
 
-        dig = pydig.query(f"{self.file_hash}.malware.hash.cymru.com", "TXT")
-        if dig:
-            return_list = self._to_list(dig)
+        if get_hash_type(self.file_hash) == 'MD5' or 'SHA-1':
+            dig = pydig.query(f"{self.file_hash}.malware.hash.cymru.com", "TXT")
+            if dig:
+                return_list = self._to_list(dig)
 
-            return self._to_dict(return_list)
+                return self._to_dict(return_list)
 
     def _to_list(self, value):
         """Converts dig query to list"""
