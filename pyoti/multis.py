@@ -256,14 +256,23 @@ class URLhaus(Domain, FileHash, IPAddress, URL):
     def url_id(self, value):
         self._url_id = value
 
-    def _check_host(self, ioc):
+    def _api_post(self, endpoint, ioctype, iocvalue):
+        """POST request to API"""
+
         data = {
-            'host': ioc
+            ioctype: iocvalue
         }
 
-        response = requests.request("POST", url=f'{self.api_url}host/', data=data)
+        response = requests.request("POST", url=endpoint, data=data)
 
         return response.json()
+
+    def _check_host(self, ioc):
+        """POST request to /host/ endpoint"""
+
+        response = self._api_post(f'{self.api_url}host/', 'host', ioc)
+
+        return response
 
     def check_domain(self):
         """Checks Domain reputation"""
@@ -274,17 +283,11 @@ class URLhaus(Domain, FileHash, IPAddress, URL):
         """Checks File Hash reputation"""
 
         if get_hash_type(self.file_hash) == 'MD5':
-            data = {
-                'md5_hash': self.file_hash
-            }
+            response = self._api_post(f'{self.api_url}payload/', 'md5_hash', self.file_hash)
         elif get_hash_type(self.file_hash) == 'SHA-256':
-            data = {
-                'sha256_hash': self.file_hash
-            }
+            response = self._api_post(f'{self.api_url}payload/', 'sha256_hash', self.file_hash)
         else:
             raise URLhausHashError("/payload/ endpoint requires a valid MD5 or SHA-256 hash!")
-
-        response = requests.request("POST", url=f'{self.api_url}payload/', data=data)
 
         return response.json()
 
@@ -295,12 +298,7 @@ class URLhaus(Domain, FileHash, IPAddress, URL):
 
     def check_url(self):
         """Checks URL reputation"""
-
-        data = {
-            'url': self.url
-        }
-
-        response = requests.request("POST", url=f'{self.api_url}url/', data=data)
+        response = self._api_post(f'{self.api_url}url/', 'url', self.url)
 
         return response.json()
 
@@ -318,58 +316,49 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
         IPAddress.__init__(self, api_key=api_key, api_url=api_url)
         URL.__init__(self, api_key=api_key, api_url=api_url)
 
-    def check_domain(self):
+    def _api_get(self, endpoint, ioctype, iocvalue, allinfo=False):
+        """GET request to API"""
+
+        params = {
+            'apikey': self.api_key,
+            ioctype: iocvalue
+        }
+        if allinfo:
+            params['allinfo'] = True
+
+        response = requests.request("GET", url=endpoint, params=params)
+
+        return response.json()
+
+    def check_domain(self, allinfo=False):
         """Checks Domain reputation"""
 
         url = f'{self.api_url}domain/report'
-        if self.domain:
-            params = {
-                'apikey': self.api_key,
-                'domain': self.domain
-            }
-            response = requests.request("GET", url=url, params=params)
+        response = self._api_get(url, 'domain', self.domain, allinfo=allinfo)
 
-            return response.json()
-        else:
-            raise VirusTotalDomainError("/domain/report endpoint requires a valid domain!")
+        return response
 
     def check_hash(self, allinfo=False, scan_id=None):
         """Checks File Hash Reputation"""
 
         url = f'{self.api_url}file/report'
         if get_hash_type(self.file_hash) == 'MD5' or 'SHA-1' or 'SHA-256':
-            params = {
-                'apikey': self.api_key,
-                'resource': self.file_hash
-            }
-            if allinfo:
-                params['allinfo'] = True
+            response = self._api_get(url, 'resource', self.file_hash, allinfo=allinfo)
         elif not self.file_hash and scan_id:
-            params = {
-                'apikey': self.api_key,
-                'resource': scan_id
-            }
-            if allinfo:
-                params['allinfo'] = True
+            response = self._api_get(url, 'resource', scan_id, allinfo=allinfo)
         else:
             raise VirusTotalHashError("/file/report endpoint requires a valid MD5/SHA1/SHA256 hash or scan_id!")
 
-        response = requests.request("GET", url=url, params=params)
+        return response
 
-        return response.json()
-
-    def check_ip(self):
+    def check_ip(self, allinfo=False):
         """Checks IP reputation"""
 
         url = f'{self.api_url}ip-address/report'
         if self.ip:
-            params = {
-                'apikey': self.api_key,
-                'ip': self.ip
-            }
-            response = requests.request("GET", url=url, params=params)
+            response = self._api_get(url, 'ip', self.ip, allinfo)
 
-            return response.json()
+            return response
         else:
             raise VirusTotalIPError("/ip-address/report endpoint requires a valid IP address!")
 
@@ -378,22 +367,10 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
 
         url = f'{self.api_url}url/report'
         if self.url:
-            params = {
-                'apikey': self.api_key,
-                'resource': self.url
-            }
-            if allinfo:
-                params['allinfo'] = True
+            response = self._api_get(url, 'resource', self.url, allinfo=allinfo)
         elif not self.url and scan_id:
-            params = {
-                'apikey': self.api_key,
-                'resource': scan_id
-            }
-            if allinfo:
-                params['allinfo'] = True
+            response = self._api_get(url, 'resource', scan_id, allinfo=allinfo)
         else:
             raise VirusTotalURLError("/url/report endpoint requires a valid URL or scan_id!")
 
-        response = requests.request("GET", url=url, params=params)
-
-        return response.json()
+        return response
