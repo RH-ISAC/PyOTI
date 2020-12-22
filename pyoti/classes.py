@@ -95,3 +95,22 @@ class URL(API):
     @url.setter
     def url(self, value):
         self._url = value
+
+
+class EmailAddress(API):
+    """EmailAddress API for PyOTI
+
+    :param email: Email address to lookup/scan
+    """
+
+    def __init__(self, api_key=None, api_url=None, email=None):
+        self._email = email
+        API.__init__(self, api_key, api_url)
+
+    @property
+    def email(self):
+        return self._email
+
+    @email.setter
+    def email(self, value):
+        self._email = value
