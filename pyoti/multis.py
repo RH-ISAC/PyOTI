@@ -3,10 +3,11 @@ import requests
 
 from maltiverse import Maltiverse
 from OTXv2 import OTXv2, IndicatorTypes
+from pymisp import ExpandedPyMISP
 
-from pyoti.classes import Domain, FileHash, IPAddress, URL
+from pyoti.classes import Domain, EmailAddress, FileHash, IPAddress, URL
 from pyoti.exceptions import MaltiverseIOCError, OTXError, URLhausHashError, VirusTotalDomainError, VirusTotalHashError, VirusTotalIPError, VirusTotalURLError
-from pyoti.keys import circlpassive, maltiverse, onyphe, otx, virustotal
+from pyoti.keys import circlpassive, maltiverse, misp, onyphe, otx, virustotal
 from pyoti.utils import get_hash_type
 
 
@@ -130,6 +131,104 @@ class MaltiverseIOC(Domain, FileHash, IPAddress, URL):
             return result
         else:
             raise MaltiverseIOCError("/url/ endpoint requires a valid URL!")
+
+
+class MISP(Domain, EmailAddress, FileHash, IPAddress, URL):
+    """MISP Threat Intel Platform
+
+    The MISP threat sharing platform is a free and open source software helping
+     information sharing of threat intelligence including cyber security
+     indicators.
+    """
+
+    def __init__(self, api_key=misp):
+        Domain.__init__(self, api_key=api_key)
+        EmailAddress.__init__(self, api_key=api_key)
+        FileHash.__init__(self, api_key=api_key)
+        IPAddress.__init__(self, api_key=api_key)
+        URL.__init__(self, api_key=api_key)
+
+    def _api(self, ssl):
+        """Instantiates ExpandedPyMISP API"""
+
+        m = ExpandedPyMISP(self.api_url, self.api_key, ssl)
+
+        return m
+
+    def _search_params(self, iocvalue, limit, warninglist):
+        params = {'value': iocvalue, 'limit': limit, 'enforce_warninglist': warninglist}
+
+        return params
+
+    def check_domain(self, ssl=True, limit=50, warninglist=True):
+        """Checks Domain reputation
+
+        :param ssl: verify cert. default True
+        :param limit: number of results. default 50
+        :param warninglist: enforce misp warninglist. default True
+        """
+
+        params = self._search_params(self.domain, limit, warninglist)
+
+        m_search = self._api(ssl).search(**params)
+
+        return m_search
+
+    def check_email(self, ssl=True, limit=50, warninglist=True):
+        """Checks Email Address reputation
+
+        :param ssl: verify cert. default True
+        :param limit: number of results. default 50
+        :param warninglist: enforce misp warninglist. default True
+        """
+
+        params = self._search_params(self.email, limit, warninglist)
+
+        m_search = self._api(ssl).search(**params)
+
+        return m_search
+
+    def check_hash(self, ssl=True, limit=50, warninglist=True):
+        """Checks File Hash reputation
+
+        :param ssl: verify cert. default True
+        :param limit: number of results. default 50
+        :param warninglist: enforce misp warninglist. default True
+        """
+
+        params = self._search_params(self.file_hash, limit, warninglist)
+
+        m_search = self._api(ssl).search(**params)
+
+        return m_search
+
+    def check_ip(self, ssl=True, limit=50, warninglist=True):
+        """Checks IP reputation
+
+        :param ssl: verify cert. default True
+        :param limit: number of results. default 50
+        :param warninglist: enforce misp warninglist. default True
+        """
+
+        params = self._search_params(self.ip, limit, warninglist)
+
+        m_search = self._api(ssl).search(**params)
+
+        return m_search
+
+    def check_url(self, ssl=True, limit=50, warninglist=True):
+        """Checks URL reputation
+
+        :param ssl: verify cert. default True
+        :param limit: number of results. default 50
+        :param warninglist: enforce misp warninglist. default True
+        """
+
+        params = self._search_params(self.url, limit, warninglist)
+
+        m_search = self._api(ssl).search(**params)
+
+        return m_search
 
 
 class Onyphe(Domain, IPAddress):
