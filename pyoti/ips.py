@@ -79,20 +79,20 @@ class SpamhausZen(IPAddress):
         answer = self._resolve_ip()
         if answer:
             results = {}
-            if answer[0] in ['127.0.0.2', '127.0.0.3', '127.0.0.9']:
-                results["address"] = answer[0]
+            if answer[0].host in ['127.0.0.2', '127.0.0.3', '127.0.0.9']:
+                results["address"] = answer[0].host
                 results["blocklist"] = "spamhaus-block-list"
 
                 return  results
-            elif answer[0] in ['127.0.0.4', '127.0.0.5', '127.0.0.6', '127.0.0.7']:
-                results["address"] = answer[0]
+            elif answer[0].host in ['127.0.0.4', '127.0.0.5', '127.0.0.6', '127.0.0.7']:
+                results["address"] = answer[0].host
                 results["blocklist"] = "spamhaus-exploits-block-list"
 
                 return results
-            elif answer[0] in ['127.255.255.252', '127.255.255.254', '127.255.255.255']:
+            elif answer[0].host in ['127.255.255.252', '127.255.255.254', '127.255.255.255']:
                 raise SpamhausZenError("Error in query!")
             else:
-                results["address"] = answer[0]
+                results["address"] = answer[0].host
                 results["blocklist"] = "unknown"
 
                 return results
@@ -124,10 +124,10 @@ class SpamhausZen(IPAddress):
             async def query(name, query_type):
                 return await resolver.query(name, query_type)
 
-            coro = query(f'{self._reverse_ip()}.zenspamhaus.org', 'A')
+            coro = query(f'{self._reverse_ip()}.zen.spamhaus.org', 'A')
             result = loop.run_until_complete(coro)
 
             return result
 
-        except aiodns.error.DNSError as e:
-            return e
+        except aiodns.error.DNSError:
+            return
