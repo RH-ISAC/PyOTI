@@ -1,5 +1,6 @@
 import json
 import re
+import time
 import xmltodict
 
 from datetime import datetime, timedelta
@@ -34,6 +35,12 @@ def split_eml_domain(email):
     domain = email.split('@')[1]
 
     return domain
+
+def time_check_since_epoch(epoch):
+    seconds = epoch - int(time.time())
+    hours = (seconds/60)/60
+    if hours >= 1:
+        return True
 
 def time_since_epoch(epoch):
     return datetime.fromtimestamp(int(epoch)).strftime('%Y-%m-%d %H:%M:%S')
