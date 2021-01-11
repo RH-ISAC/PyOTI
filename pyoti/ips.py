@@ -1,12 +1,14 @@
 import aiodns
 import asyncio
+import json
 import requests
 
 from nslookup import Nslookup
 
 from pyoti.classes import IPAddress
 from pyoti.exceptions import SpamhausZenError
-from pyoti.keys import abuseipdb
+from pyoti.keys import abuseipdb, spamhausintel
+from pyoti.utils import time_check_since_epoch
 
 
 class AbuseIPDB(IPAddress):
@@ -59,6 +61,50 @@ class AbuseIPDB(IPAddress):
         response = self._api_get(self.api_url)
 
         return response
+
+
+class SpamhausIntel(IPAddress):
+    """SpamhauzIntel IP Address Metadata
+
+    SpamhausIntel is an API with metadata relating to compromised IP Addresses.
+    """
+
+    def __init__(self, api_key=spamhausintel, api_url='https://api.spamhaus.org/api/v1/login'):
+        self._token = None
+        self._expires = None
+        IPAddress.__init__(self, api_key, api_url)
+
+    def _api_login(self):
+        data = {
+            "username": spamhausintel.split(":")[0],
+            "password": spamhausintel.split(":")[1],
+            "realm": "intel"
+        }
+
+        response = requests.request("POST", url=self.api_url, data=json.dumps(data))
+
+        if response.status_code == 200:
+            self._token = response.json()["token"]
+            self._expires = response.json()["expires"]
+            return response.json()
+
+    def _api_get(self, type, ip, mask):
+        if not self._token:
+            self._api_login()
+        if not time_check_since_epoch(self._expires):
+            self._api_login()
+
+        headers = {'Authorization': f'Bearer {self._token}'}
+
+        response = requests.request("GET", url=f'https://api.spamhaus.org/api/intel/v1/byobject/cidr/XBL/listed/{type}/{ip}/{mask}', headers=headers)
+
+        return response
+
+    def check_ip(self):
+        get = self._api_get(type="live", ip=self.ip, mask="32")
+
+        if get.status_code == 200:
+            return get.json()
 
 
 class SpamhausZen(IPAddress):
