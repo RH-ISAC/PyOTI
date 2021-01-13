@@ -62,7 +62,7 @@ class AbuseIPDB(IPAddress):
 
 
 class DNSBlockList(IPAddress):
-    """SpamhausZen IP Blacklist
+    """DNSBlockList IP Block List
 
     DNSBlockList queries a list of DNS block lists for IP Addresses, and returns the answer address and the block list it hit on.
     """
@@ -134,7 +134,6 @@ class DNSBlockList(IPAddress):
 
         except aiodns.error.DNSError:
             return
-
 
 
 class SpamhausIntel(IPAddress):
