@@ -41,6 +41,8 @@ def time_check_since_epoch(epoch):
     hours = (seconds/60)/60
     if hours >= 1:
         return True
+    else:
+        return False
 
 def time_since_epoch(epoch):
     return datetime.fromtimestamp(int(epoch)).strftime('%Y-%m-%d %H:%M:%S')
