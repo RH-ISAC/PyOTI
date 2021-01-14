@@ -2,10 +2,44 @@ import base64
 import json
 import requests
 
+from urllib.parse import urlencode
+
 from pyoti.classes import URL
 from pyoti.exceptions import GSBPermissionDenied, GSBInvalidAPIKey
-from pyoti.keys import googlesafebrowsing, phishtank
+from pyoti.keys import googlesafebrowsing, linkpreview, phishtank
 from pyoti.utils import xml_to_json
+
+
+class LinkPreview(URL):
+    """LinkPreview Shortened URL Previewer
+
+    LinkPreview API provides basic website information from any given URL.
+    """
+
+    def __init__(self, api_key=linkpreview, api_url="https://api.linkpreview.net"):
+        URL.__init__(self, api_key, api_url)
+
+    def _api_get(self):
+        """GET request to API"""
+
+        params = {
+            'key': self.api_key,
+            'q': self.url
+        }
+
+        encoded = urlencode(params)
+
+        response = requests.request("GET", url=self.api_url, params=encoded)
+
+        if response.status_code == 200:
+            return response.json()
+
+    def check_url(self):
+        """Checks URL reputation"""
+
+        response = self._api_get()
+
+        return response
 
 
 class Phishtank(URL):
