@@ -1,4 +1,4 @@
-##PyOTI - Python Open Threat Intelligence
+# PyOTI - Python Open Threat Intelligence
 
 PyOTI is a python library to easily query various threat intelligence related APIs.
 
@@ -12,9 +12,9 @@ PyOTI is a python library to easily query various threat intelligence related AP
 |URLs                        | GoogleSafeBrowsing, LinkPreview, Phishtank                       |
 |Multis                      | CIRCLPSSL, MaltiverseIOC, MISP, Onyphe, OTX, URLhaus, VirusTotal |
 ##
-##Installation
+## Installation
 Virtualenv:
-```bash
+```
 python3 -m pip install virtualenv
 mkdir ~/python-venv && cd ~/python-venv
 python3 -m venv pyoti
@@ -25,7 +25,7 @@ cd PyOTI
 python3 -m pip install .
 ```
 No virtualenv:
-```bash
+```
 git clone https://github.com/RH-ISAC/PyOTI
 cd PyOTI
 python3 -m pip install .
