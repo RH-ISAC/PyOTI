@@ -97,7 +97,7 @@ class IrisInvestigate(Domain):
         api = self._api()
         iris = api.iris_investigate(domains=self.domain)
 
-        return iris.get('response')
+        return iris.get('results')
 
 
 class WhoisXML(Domain):
