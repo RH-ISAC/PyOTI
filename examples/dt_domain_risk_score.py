@@ -12,7 +12,7 @@ def run(args):
     return domain_rep[0]['domain_risk']
 
 def main():
-    parser = ArgumentParser(prog='IrisInvestigate Domain Reputation', description='Check Domaintools Iris Investigate for domain reputation of a given domain')
+    parser = ArgumentParser(prog='IrisInvestigate Domain Risk Score', description='Check Domaintools Iris Investigate for domain risk score of a given domain')
     parser.add_argument('-d', '--domain', help='domain to check reputation')
     args = parser.parse_args()
 
