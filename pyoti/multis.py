@@ -1,3 +1,5 @@
+import aiodns
+import asyncio
 import pypssl
 import requests
 
@@ -6,7 +8,7 @@ from OTXv2 import OTXv2, IndicatorTypes
 from pymisp import ExpandedPyMISP
 
 from pyoti.classes import Domain, EmailAddress, FileHash, IPAddress, URL
-from pyoti.exceptions import MaltiverseIOCError, OTXError, URLhausHashError, VirusTotalDomainError, VirusTotalHashError, VirusTotalIPError, VirusTotalURLError
+from pyoti.exceptions import MaltiverseIOCError, OTXError, SpamhausZenError, URLhausHashError, VirusTotalDomainError, VirusTotalHashError, VirusTotalIPError, VirusTotalURLError
 from pyoti.keys import circlpassive, maltiverse, misp, onyphe, otx, virustotal
 from pyoti.utils import get_hash_type
 
@@ -64,6 +66,155 @@ class CIRCLPSSL(FileHash, IPAddress):
 
         # still need to verify if this returns a list or dict
         return cfetch
+
+
+class DNSBlockList(Domain, IPAddress):
+    """DNSBlockList Domain/IP Block List
+
+    DNSBlockList queries a list of DNS block lists for Domains or IP Addresses,
+    and returns the answer address and the block list it hit on.
+    """
+
+    RBL = { # IP-Based Zones
+        'b.barracudacentral.org',
+        'bl.spamcop.net',
+        'zen.spamhaus.org'
+    }
+
+    DBL = { # Domain-Based Zones
+        'dbl.spamhaus.org',
+        'multi.uribl.com',
+        'multi.surbl.org'
+    }
+
+    def check_domain(self):
+        """Checks Domain reputation
+
+        Checks DNS lookup query for a given domain and maps return codes to
+        appropriate data source.
+        """
+        result_list = []
+        for dbl in self.DBL:
+            answer = self._resolve(blocklist=dbl, type='domain')
+            if answer:
+                results = {}
+                bl = dbl.split(".")[1]
+                if answer[0].host in ['127.0.1.2']:
+                    results["address"] = answer[0].host
+                    results["blocklist"] = f"{bl}-spam"
+
+                    result_list.append(results)
+                elif answer[0].host in ['127.0.1.4']:
+                    results["address"] = answer[0].host
+                    results["blocklist"] = f"{bl}-phish"
+
+                    result_list.append(results)
+                elif answer[0].host in ['127.0.1.5']:
+                    results["address"] = answer[0].host
+                    results["blocklist"] = f"{bl}-malware"
+
+                    result_list.append(results)
+                elif answer[0].host in ['127.0.1.6']:
+                    results["address"] = answer[0].host
+                    results["blocklist"] = f"{bl}-botnet-c2"
+
+                    result_list.append(results)
+                elif answer[0].host in ['127.0.1.102']:
+                    results["address"] = answer[0].host
+                    results["blocklist"] = f"{bl}-abused-legit"
+
+                    result_list.append(results)
+                elif answer[0].host in ['127.0.1.103']:
+                    results["address"] = answer[0].host
+                    results["blocklist"] = f"{bl}-abused-redirector"
+
+                    result_list.append(results)
+                elif answer[0].host in ['127.0.1.104']:
+                    results["address"] = answer[0].host
+                    results["blocklist"] = f"{bl}-abused-phish"
+
+                    result_list.append(results)
+                elif answer[0].host in ['127.0.1.105']:
+                    results["address"] = answer[0].host
+                    results["blocklist"] = f"{bl}-abused-malware"
+
+                    result_list.append(results)
+                elif answer[0].host in ['127.0.1.106']:
+                    results["address"] = answer[0].host
+                    results["blocklist"] = f"{bl}-abused-botnet-c2"
+
+                    result_list.append(results)
+                elif answer[0].host in ['127.0.1.255']:
+                    raise SpamhausZenError("IP queries prohibited!")
+                elif answer[0].host in ['127.255.255.252', '127.255.255.254', '127.255.255.255']:
+                    raise SpamhausZenError("Error in query!")
+        return result_list
+
+    def check_ip(self):
+        """Checks IP reputation
+
+        Checks reverse DNS lookup query for a given IP and maps return codes to
+        appropriate data source.
+        """
+        result_list = []
+        for rbl in self.RBL:
+            answer = self._resolve(blocklist=rbl, type='ip')
+            if answer:
+                results = {}
+                bl = rbl.split(".")[1]
+                if answer[0].host in ['127.0.0.2', '127.0.0.3', '127.0.0.9']:
+                    results["address"] = answer[0].host
+                    results["blocklist"] = f"{bl}-SBL"
+
+                    result_list.append(results)
+                elif answer[0].host in ['127.0.0.4', '127.0.0.5', '127.0.0.6', '127.0.0.7']:
+                    results["address"] = answer[0].host
+                    results["blocklist"] = f"{bl}-XBL"
+
+                    result_list.append(results)
+                elif answer[0].host in ['127.0.0.10', '127.0.0.11']:
+                    results["address"] = answer[0].host
+                    results["blocklist"] = f"{bl}-PBL"
+
+                    result_list.append(results)
+                elif answer[0].host in ['127.255.255.252', '127.255.255.254', '127.255.255.255']:
+                    raise SpamhausZenError("Error in query!")
+                else:
+                    results["address"] = answer[0].host
+                    results["blocklist"] = f"{bl}-unknown"
+
+                    result_list.append(results)
+        return result_list
+
+    def _reverse_ip(self, ipaddr):
+        """Prepares IPv4 address for reverse lookup"""
+
+        rev = '.'.join(reversed(str(ipaddr).split(".")))
+
+        return rev
+
+    def _resolve(self, blocklist, type):
+        """Performs reverse DNS lookup"""
+
+        try:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            resolver = aiodns.DNSResolver(loop=loop, nameservers=['9.9.9.9'])
+
+            async def query(name, query_type):
+                return await resolver.query(name, query_type)
+
+            if type == 'ip':
+                coro = query(f'{self._reverse_ip(ipaddr=self.ip)}.{blocklist}', 'A')
+            elif type == 'domain':
+                coro = query(f'{self.domain}.{blocklist}', 'A')
+
+            result = loop.run_until_complete(coro)
+
+            return result
+
+        except aiodns.error.DNSError:
+            return
 
 
 class MaltiverseIOC(Domain, FileHash, IPAddress, URL):
