@@ -9,7 +9,10 @@ def run(args):
     iris.domain = args
     domain_rep = iris.check_domain()
 
-    return domain_rep[0]['domain_risk']
+    try:
+        return f"Iris risk score: {domain_rep[0]['domain_risk']['risk_score']}"
+    except IndexError:
+        return "Iris risk score: N/A"
 
 def main():
     parser = ArgumentParser(prog='IrisInvestigate Domain Risk Score', description='Check Domaintools Iris Investigate for domain risk score of a given domain')
