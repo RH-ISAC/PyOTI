@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# This bash script is meant to be run from the root directory of PyOTI.
+# It will check the diff between pyoti/keys.py.sample and pyoti/keys.py and append
+# any API key variables that are missing from pyoti/keys.py and set them to ''.
+# Please make sure to update pyoti/keys.py with API secrets after running.
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m' # no color
