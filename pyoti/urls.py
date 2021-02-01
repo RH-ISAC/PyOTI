@@ -10,6 +10,72 @@ from pyoti.keys import googlesafebrowsing, linkpreview, phishtank
 from pyoti.utils import xml_to_json
 
 
+class GoogleSafeBrowsing(URL):
+    """GoogleSafeBrowsing URL Blacklist
+
+    Google Safe Browsing is a blacklist service provided by Google that
+    provides lists of URLs for web resources that contain malware or phishing
+    content.
+    """
+
+    def __init__(self, api_key=googlesafebrowsing, api_url='https://safebrowsing.googleapis.com/v4/threatMatches:find'):
+        URL.__init__(self, api_key, api_url)
+
+    def _api_post(self, endpoint, platforms):
+        """POST request to API"""
+
+        data = {
+            "client": {
+                "clientId": "PyOTI",
+                "clientVersion": "0.1"
+            },
+            "threatInfo": {
+                "threatTypes":
+                    [
+                        "MALWARE",
+                        "SOCIAL_ENGINEERING",
+                        "THREAT_TYPE_UNSPECIFIED",
+                        "POTENTIALLY_HARMFUL_APPLICATION",
+                        "UNWANTED_SOFTWARE"
+                    ],
+                "platformTypes": platforms,
+                "threatEntryTypes": ["URL"],
+                "threatEntries": [{'url': self.url}]
+            }
+        }
+
+        headers = {'Content-type': 'application/json'}
+
+        response = requests.request("POST",
+                                    url=endpoint,
+                                    data=json.dumps(data),
+                                    params={'key': self.api_key},
+                                    headers=headers)
+
+        if response.status_code == 200:
+            if response.json() == {}:
+                return "No matches!"
+            else:
+                return response.json()
+
+        elif response.status_code == 400:
+            raise GSBInvalidAPIKey(response.json()['error']['message'])
+
+        elif response.status_code == 403:
+            raise GSBPermissionDenied(response.json()['error']['message'])
+
+    def check_url(self, platforms=["ANY_PLATFORM"]):
+        """Checks URL reputation
+
+        :param platforms: Default: ANY_PLATFORM. For all available options please see:
+        https://developers.google.com/safe-browsing/v4/reference/rest/v4/PlatformType
+        """
+
+        response = self._api_post(self.api_url, platforms)
+
+        return response
+
+
 class LinkPreview(URL):
     """LinkPreview Shortened URL Previewer
 
@@ -81,70 +147,5 @@ class Phishtank(URL):
         """Checks URL reputation"""
 
         response = self._api_post(self.api_url)
-
-        return response
-
-class GoogleSafeBrowsing(URL):
-    """GoogleSafeBrowsing URL Blacklist
-
-    Google Safe Browsing is a blacklist service provided by Google that
-    provides lists of URLs for web resources that contain malware or phishing
-    content.
-    """
-
-    def __init__(self, api_key=googlesafebrowsing, api_url='https://safebrowsing.googleapis.com/v4/threatMatches:find'):
-        URL.__init__(self, api_key, api_url)
-
-    def _api_post(self, endpoint, platforms):
-        """POST request to API"""
-
-        data = {
-            "client": {
-                "clientId": "PyOTI",
-                "clientVersion": "0.1"
-            },
-            "threatInfo": {
-                "threatTypes":
-                    [
-                        "MALWARE",
-                        "SOCIAL_ENGINEERING",
-                        "THREAT_TYPE_UNSPECIFIED",
-                        "POTENTIALLY_HARMFUL_APPLICATION",
-                        "UNWANTED_SOFTWARE"
-                    ],
-                "platformTypes": platforms,
-                "threatEntryTypes": ["URL"],
-                "threatEntries": [{'url': self.url}]
-            }
-        }
-
-        headers = {'Content-type': 'application/json'}
-
-        response = requests.request("POST",
-                                    url=endpoint,
-                                    data=json.dumps(data),
-                                    params={'key': self.api_key},
-                                    headers=headers)
-
-        if response.status_code == 200:
-            if response.json() == {}:
-                return "No matches!"
-            else:
-                return response.json()
-
-        elif response.status_code == 400:
-            raise GSBInvalidAPIKey(response.json()['error']['message'])
-
-        elif response.status_code == 403:
-            raise GSBPermissionDenied(response.json()['error']['message'])
-
-    def check_url(self, platforms=["ANY_PLATFORM"]):
-        """Checks URL reputation
-
-        :param platforms: Default: ANY_PLATFORM. For all available options please see:
-        https://developers.google.com/safe-browsing/v4/reference/rest/v4/PlatformType
-        """
-
-        response = self._api_post(self.api_url, platforms)
 
         return response
