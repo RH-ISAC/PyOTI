@@ -8,9 +8,9 @@ PyOTI is a python library to easily query various threat intelligence related AP
 |Domains                     | CheckDMARC, CIRCLPDNS, IrisInvestigate, WhoisXML                 |
 |Email Addresses             | EmailRepIO                                                       |
 |Hashes                      | MalwareHashRegistry                                              |
-|IP Addresses                | AbuseIPDB, DNSBlockList, SpamhausIntel                           |
+|IP Addresses                | AbuseIPDB, SpamhausIntel                                         |
 |URLs                        | GoogleSafeBrowsing, LinkPreview, Phishtank                       |
-|Multis                      | CIRCLPSSL, MaltiverseIOC, MISP, Onyphe, OTX, URLhaus, VirusTotal |
+|Multis                      | CIRCLPSSL, DNSBlockList, MaltiverseIOC, MISP, Onyphe, OTX, URLhaus, VirusTotal |
 ##
 ## Installation
 Virtualenv:
