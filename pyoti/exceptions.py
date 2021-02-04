@@ -14,6 +14,12 @@ class GSBInvalidAPIKey(PyOTIError):
     """Exception raised for Google Safe Browsing API invalid API key error."""
     pass
 
+
+class LinkPreviewError(PyOTIError):
+    """Exception raised for LinkPreview API."""
+    pass
+
+
 class MaltiverseIOCError(PyOTIError):
     """Exception raised for MaltiverseIOC errors."""
     pass

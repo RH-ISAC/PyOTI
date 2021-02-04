@@ -5,7 +5,7 @@ import requests
 from urllib.parse import urlencode
 
 from pyoti.classes import URL
-from pyoti.exceptions import GSBPermissionDenied, GSBInvalidAPIKey
+from pyoti.exceptions import GSBPermissionDenied, GSBInvalidAPIKey, LinkPreviewError
 from pyoti.keys import googlesafebrowsing, linkpreview, phishtank
 from pyoti.utils import xml_to_json
 
@@ -88,6 +88,8 @@ class LinkPreview(URL):
     def _api_get(self):
         """GET request to API"""
 
+        error_code = [400, 401, 403, 404, 423, 425, 426, 429]
+
         params = {
             'key': self.api_key,
             'q': self.url
@@ -99,6 +101,9 @@ class LinkPreview(URL):
 
         if response.status_code == 200:
             return response.json()
+
+        elif response.status_code in error_code:
+            raise LinkPreviewError(response.json()['description'])
 
     def check_url(self):
         """Checks URL reputation"""
