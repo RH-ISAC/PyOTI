@@ -18,10 +18,10 @@ class AbuseIPDB(IPAddress):
 
     :param api_key: AbuseIPDB API key
     :param api_url: AbuseIPDB API URL
-    :param max_age: How far back in time (days) to fetch reports. (defaults to 90 days)
+    :param max_age: How far back in time (days) to fetch reports. (defaults to 30 days)
     """
 
-    def __init__(self, api_key=abuseipdb, api_url='https://api.abuseipdb.com/api/v2/check', max_age=90):
+    def __init__(self, api_key=abuseipdb, api_url='https://api.abuseipdb.com/api/v2/check', max_age=30):
         self._max_age = max_age
         IPAddress.__init__(self, api_key, api_url)
 
