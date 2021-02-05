@@ -21,22 +21,13 @@ class AbuseIPDB(IPAddress):
     :param max_age: How far back in time (days) to fetch reports. (defaults to 90 days)
     """
 
-    def __init__(self, api_key=abuseipdb, api_url='https://api.abuseipdb.com/api/v2/check', max_age=90):
-        self._max_age = max_age
+    def __init__(self, api_key=abuseipdb, api_url='https://api.abuseipdb.com/api/v2/check'):
         IPAddress.__init__(self, api_key, api_url)
 
-    @property
-    def max_age(self):
-        return self._max_age
-
-    @max_age.setter
-    def max_age(self, value):
-        self._max_age = value
-
-    def _api_get(self, endpoint):
+    def _api_get(self, endpoint, max_age):
         params = {
             'ipAddress': self.ip,
-            'maxAgeInDays': self.max_age
+            'maxAgeInDays': max_age
         }
 
         headers = {
@@ -48,7 +39,7 @@ class AbuseIPDB(IPAddress):
 
         return response.json()
 
-    def check_ip(self):
+    def check_ip(self, max_age=30):
         """Checks IP reputation
 
         The check endpoint (api.abuseipdb.com/api/v2/check) accepts a single IP
@@ -56,7 +47,7 @@ class AbuseIPDB(IPAddress):
         return reports within the last X number of days.
         """
 
-        response = self._api_get(self.api_url)
+        response = self._api_get(self.api_url, max_age)
 
         return response
 
