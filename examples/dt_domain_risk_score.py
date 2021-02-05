@@ -1,12 +1,10 @@
 from argparse import ArgumentParser
 
 from pyoti.domains import IrisInvestigate
-from pyoti.keys import domaintools
 
 
 def run(args):
     iris = IrisInvestigate()
-    iris.api_key = domaintools
     iris.domain = args
     domain_rep = iris.check_domain()
 
