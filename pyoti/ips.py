@@ -18,6 +18,7 @@ class AbuseIPDB(IPAddress):
 
     :param api_key: AbuseIPDB API key
     :param api_url: AbuseIPDB API URL
+    :param max_age: How far back in time (days) to fetch reports. (defaults to 90 days)
     """
 
     def __init__(self, api_key=abuseipdb, api_url='https://api.abuseipdb.com/api/v2/check'):
@@ -44,8 +45,6 @@ class AbuseIPDB(IPAddress):
         The check endpoint (api.abuseipdb.com/api/v2/check) accepts a single IP
         address (v4 or v6). Optionally you may set the max_age parameter to only
         return reports within the last X number of days.
-
-        :param max_age: How far back in time (days) to query. (defaults to 30 days)
         """
 
         response = self._api_get(self.api_url, max_age)
