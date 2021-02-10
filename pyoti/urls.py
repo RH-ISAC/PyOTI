@@ -5,7 +5,7 @@ import requests
 from urllib.parse import urlencode
 
 from pyoti.classes import URL
-from pyoti.exceptions import GSBPermissionDenied, GSBInvalidAPIKey, LinkPreviewError
+from pyoti.exceptions import GSBError, LinkPreviewError
 from pyoti.keys import googlesafebrowsing, linkpreview, phishtank
 from pyoti.utils import xml_to_json
 
@@ -23,6 +23,8 @@ class GoogleSafeBrowsing(URL):
 
     def _api_post(self, endpoint, platforms):
         """POST request to API"""
+
+        error_code = [400, 403, 429, 500, 503, 504]
 
         data = {
             "client": {
@@ -58,11 +60,8 @@ class GoogleSafeBrowsing(URL):
             else:
                 return response.json()
 
-        elif response.status_code == 400:
-            raise GSBInvalidAPIKey(response.json()['error']['message'])
-
-        elif response.status_code == 403:
-            raise GSBPermissionDenied(response.json()['error']['message'])
+        elif response.status_code in error_code:
+            raise GSBError(response.json()['error']['message'])
 
     def check_url(self, platforms=["ANY_PLATFORM"]):
         """Checks URL reputation

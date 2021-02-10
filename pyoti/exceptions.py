@@ -5,13 +5,8 @@ class PyOTIError(Exception):
         self.message = message
 
 
-class GSBPermissionDenied(PyOTIError):
-    """Exception raised for Google Safe Browsing API permission errors."""
-    pass
-
-
-class GSBInvalidAPIKey(PyOTIError):
-    """Exception raised for Google Safe Browsing API invalid API key error."""
+class GSBError(PyOTIError):
+    """Exception raised for Google Safe Browsing HTTP Status Errors"""
     pass
 
 
