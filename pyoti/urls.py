@@ -131,25 +131,28 @@ class Phishtank(URL):
     def username(self, value):
         self._username = value
 
-    def _api_post(self, endpoint):
+    def _api_post(self):
         """POST request to API"""
 
         new_check_bytes = self.url.encode('ascii')
         base64_bytes = base64.b64encode(new_check_bytes)
         base64_new_check = base64_bytes.decode('ascii')
-        self._api_url += base64_new_check
+        api_uri = self.api_url + base64_new_check
         headers = {
             'app_key': self.api_key,
             'User-agent': f"phishtank/{self.username}"
         }
 
-        response = requests.request("POST", url=endpoint, headers=headers)
+        response = requests.request("POST", url=api_uri, headers=headers)
 
         return xml_to_json(response.text)
 
     def check_url(self):
         """Checks URL reputation"""
 
-        response = self._api_post(self.api_url)
+        response = self._api_post()
 
-        return response
+        try:
+            return response['response']['results']['url0']
+        except KeyError:
+            return response['response']['results']

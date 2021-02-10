@@ -69,5 +69,6 @@ def xml_to_json(xml_object):
     """Convert XML to JSON"""
 
     xml_dict = xmltodict.parse(xml_object)
-    json_data = json.dumps(xml_dict)
+    dumps = json.dumps(xml_dict)
+    json_data = json.loads(dumps)
     return json_data
