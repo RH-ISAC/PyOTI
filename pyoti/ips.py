@@ -1,10 +1,7 @@
-import aiodns
-import asyncio
 import json
 import requests
 
 from pyoti.classes import IPAddress
-from pyoti.exceptions import SpamhausZenError
 from pyoti.keys import abuseipdb, spamhausintel
 from pyoti.utils import time_check_since_epoch
 
