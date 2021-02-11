@@ -8,7 +8,7 @@ from OTXv2 import OTXv2, IndicatorTypes
 from pymisp import ExpandedPyMISP
 
 from pyoti.classes import Domain, EmailAddress, FileHash, IPAddress, URL
-from pyoti.exceptions import MaltiverseIOCError, OTXError, SpamhausZenError, URLhausHashError, VirusTotalDomainError, VirusTotalHashError, VirusTotalIPError, VirusTotalURLError
+from pyoti.exceptions import MaltiverseIOCError, OTXError, SpamhausError, URLhausHashError, VirusTotalDomainError, VirusTotalHashError, VirusTotalIPError, VirusTotalURLError
 from pyoti.keys import circlpassive, maltiverse, misp, onyphe, otx, virustotal
 from pyoti.utils import get_hash_type
 
@@ -145,9 +145,9 @@ class DNSBlockList(Domain, IPAddress):
 
                     result_list.append(results)
                 elif answer[0].host in ['127.0.1.255']:
-                    raise SpamhausZenError("IP queries prohibited!")
+                    raise SpamhausError("IP queries prohibited!")
                 elif answer[0].host in ['127.255.255.252', '127.255.255.254', '127.255.255.255']:
-                    raise SpamhausZenError("Error in query!")
+                    raise SpamhausError("Error in query!")
         return result_list
 
     def check_ip(self):
@@ -178,7 +178,7 @@ class DNSBlockList(Domain, IPAddress):
 
                     result_list.append(results)
                 elif answer[0].host in ['127.255.255.252', '127.255.255.254', '127.255.255.255']:
-                    raise SpamhausZenError("Error in query!")
+                    raise SpamhausError("Error in query!")
                 else:
                     results["address"] = answer[0].host
                     results["blocklist"] = f"{bl}-unknown"

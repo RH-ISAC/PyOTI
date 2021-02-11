@@ -24,7 +24,7 @@ class OTXError(PyOTIError):
     """Exception raised for AlienVault OTX errors."""
 
 
-class SpamhausZenError(PyOTIError):
+class SpamhausError(PyOTIError):
     """Exception raised for any special codes returned that indicates an error in query."""
     pass
 
