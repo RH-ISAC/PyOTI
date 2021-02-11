@@ -32,7 +32,7 @@ class AbuseIPDB(IPAddress):
             'Key': self.api_key
         }
 
-        response = requests.request("GET", url=self.api_url, headers=headers, params=params)
+        response = requests.request('GET', url=self.api_url, headers=headers, params=params)
 
         return response.json()
 
@@ -66,12 +66,12 @@ class SpamhausIntel(IPAddress):
 
     def _api_login(self):
         data = {
-            "username": spamhausintel.split(":")[0],
-            "password": spamhausintel.split(":")[1],
-            "realm": "intel"
+            'username': spamhausintel.split(":")[0],
+            'password': spamhausintel.split(":")[1],
+            'realm': 'intel'
         }
 
-        response = requests.request("POST", url=self.api_url, data=json.dumps(data))
+        response = requests.request('POST', url=self.api_url, data=json.dumps(data))
 
         if response.status_code == 200:
             self._token = response.json()["token"]
