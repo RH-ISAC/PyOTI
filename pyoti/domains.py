@@ -22,6 +22,8 @@ class CheckDMARC(Domain):
         """Checks domain reputation
 
         Checks for any SPF or DMARC records for a given domain.
+
+        :return: dict
         """
 
         pypkg_exists(self.pypkg)
@@ -63,12 +65,13 @@ class CIRCLPDNS(Domain):
         """Checks domain reputation
 
         Checks CIRCL Passive DNS for historial DNS records for a given domain.
+
+        :return: list of dicts
         """
 
         pdns = self._api()
         query = pdns.query(self.domain)
 
-        # still need to verify if this returns a list or dict
         return query
 
 
