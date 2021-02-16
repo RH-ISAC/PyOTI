@@ -8,7 +8,7 @@ from OTXv2 import OTXv2, IndicatorTypes
 from pymisp import ExpandedPyMISP
 
 from pyoti.classes import Domain, EmailAddress, FileHash, IPAddress, URL
-from pyoti.exceptions import MaltiverseIOCError, OTXError, SpamhausError, URLhausHashError, VirusTotalDomainError, VirusTotalHashError, VirusTotalIPError, VirusTotalURLError
+from pyoti.exceptions import MaltiverseIOCError, OTXError, PyOTIError, SpamhausError, URLhausHashError, VirusTotalDomainError, VirusTotalHashError, VirusTotalIPError, VirusTotalURLError
 from pyoti.keys import circlpassive, maltiverse, misp, onyphe, otx, virustotal
 from pyoti.utils import get_hash_type
 
@@ -35,6 +35,8 @@ class CIRCLPSSL(FileHash, IPAddress):
         """Checks IP reputation
 
         Checks CIRCL Passive SSL for historical X.509 certificates for a given IP.
+
+        :return: dict
         """
 
         pssl = self._api()
@@ -47,6 +49,8 @@ class CIRCLPSSL(FileHash, IPAddress):
 
         Checks CIRCL Passive SSL for historical X.509 certificates for a given
         certificate fingerprint.
+
+        :return: dict
         """
 
         pssl = self._api()
@@ -62,7 +66,10 @@ class CIRCLPSSL(FileHash, IPAddress):
         """
 
         pssl = self._api()
-        cfetch = pssl.fetch_cert(self.file_hash)
+        try:
+            cfetch = pssl.fetch_cert(self.file_hash)
+        except Exception as e:
+            raise PyOTIError(e)
 
         # still need to verify if this returns a list or dict
         return cfetch
