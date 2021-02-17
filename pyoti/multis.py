@@ -461,15 +461,24 @@ class OTX(Domain, FileHash, IPAddress, URL):
     and threat data producers to share research and investigate new threats.
     """
 
+    def __init__(self, api_key=otx):
+        Domain.__init__(self, api_key=api_key)
+        FileHash.__init__(self, api_key=api_key)
+        IPAddress.__init__(self, api_key=api_key)
+        URL.__init__(self, api_key=api_key)
+
     def _api(self):
         """Instantiates OTXv2 API"""
 
-        api = OTXv2(api_key=otx)
+        api = OTXv2(api_key=self.api_key)
 
         return api
 
     def check_domain(self):
-        """Checks Domain reputation"""
+        """Checks Domain reputation
+
+        :return: dict
+        """
 
         api = self._api()
         if self.domain:
@@ -479,7 +488,10 @@ class OTX(Domain, FileHash, IPAddress, URL):
             raise OTXError("/api/v1/indicators/domain/{domain}/{section} endpoint requires a valid domain!")
 
     def check_hash(self):
-        """Checks File Hash reputation"""
+        """Checks File Hash reputation
+
+        :return: dict
+        """
 
         api = self._api()
 
@@ -496,7 +508,10 @@ class OTX(Domain, FileHash, IPAddress, URL):
             raise OTXError("/api/v1/indicators/file/{file_hash}/{section} endpoint requires a valid MD5, SHA1 or SHA256 hash!")
 
     def check_ip(self):
-        """Checks IP reputation"""
+        """Checks IP reputation
+
+        :return: dict
+        """
 
         api = self._api()
         if self.ip:
@@ -505,7 +520,10 @@ class OTX(Domain, FileHash, IPAddress, URL):
             raise OTXError("/api/v1/indicators/IPv4/{ip}/{section} endpoint requires a valid IPv4 address!")
 
     def check_url(self):
-        """Checks URL reputation"""
+        """Checks URL reputation
+
+        :return: dict
+        """
 
         api = self._api()
         if self.url:
@@ -519,10 +537,12 @@ class URLhaus(Domain, FileHash, IPAddress, URL):
 
     URLhaus is a project from abuse.ch with the goal of collecting, tracking,
     and sharing malicious URLs that are being used for malware distribution.
+
+    :param url_id: search by URLhaus urlid rather than URL itself
     """
 
     def __init__(self, api_url="https://urlhaus-api.abuse.ch/v1/", url_id=None):
-        self._url_id = url_id
+        self.url_id = url_id
 
         Domain.__init__(self, api_url=api_url)
         FileHash.__init__(self, api_url=api_url)
@@ -531,11 +551,11 @@ class URLhaus(Domain, FileHash, IPAddress, URL):
 
     @property
     def url_id(self):
-        return self._url_id
+        return self.url_id
 
     @url_id.setter
     def url_id(self, value):
-        self._url_id = value
+        self.url_id = value
 
     def _api_post(self, endpoint, ioctype, iocvalue):
         """POST request to API"""
@@ -579,9 +599,17 @@ class URLhaus(Domain, FileHash, IPAddress, URL):
 
     def check_url(self):
         """Checks URL reputation"""
-        response = self._api_post(f'{self.api_url}url/', 'url', self.url)
 
-        return response.json()
+        if not self.url_id and self.url:
+            response = self._api_post(f'{self.api_url}url/', 'url', self.url)
+
+            return response.json()
+        elif not self.url and self.url_id:
+            response = self._api_post(f'{self.api_url}urlid/', 'urlid', self.url_id)
+
+            return response.json()
+        else:
+            raise PyOTIError("You must supply either an urlid or URL to check, but not both!")
 
 
 class VirusTotal(Domain, FileHash, IPAddress, URL):
