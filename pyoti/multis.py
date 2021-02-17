@@ -432,7 +432,10 @@ class Onyphe(Domain, IPAddress):
         return response.json()
 
     def check_domain(self):
-        """Checks Domain reputation"""
+        """Checks Domain reputation
+
+        :return: dict
+        """
 
         url = f"{self.api_url}summary/domain/{self.domain}"
         response = self._api_get(url)
@@ -440,7 +443,10 @@ class Onyphe(Domain, IPAddress):
         return response
 
     def check_ip(self):
-        """Checks IP reputation"""
+        """Checks IP reputation
+
+        :return: dict
+        """
 
         url = f"{self.api_url}summary/ip/{self.ip}"
         response = self._api_get(url)
