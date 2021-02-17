@@ -99,6 +99,8 @@ class DNSBlockList(Domain, IPAddress):
 
         Checks DNS lookup query for a given domain and maps return codes to
         appropriate data source.
+
+        :return: dict
         """
         result_list = []
         for dbl in self.DBL:
@@ -162,6 +164,8 @@ class DNSBlockList(Domain, IPAddress):
 
         Checks reverse DNS lookup query for a given IP and maps return codes to
         appropriate data source.
+
+        :return: dict
         """
         result_list = []
         for rbl in self.RBL:
@@ -194,15 +198,17 @@ class DNSBlockList(Domain, IPAddress):
         return result_list
 
     def _reverse_ip(self, ipaddr):
-        """Prepares IPv4 address for reverse lookup"""
+        """Prepares IPv4 address for reverse lookup
 
+        :param ipaddr: IP Address
+        :return: str
+        """
         rev = '.'.join(reversed(str(ipaddr).split(".")))
 
         return rev
 
     def _resolve(self, blocklist, type):
         """Performs reverse DNS lookup"""
-
         try:
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
@@ -314,6 +320,13 @@ class MISP(Domain, EmailAddress, FileHash, IPAddress, URL):
         return m
 
     def _search_params(self, iocvalue, limit, warninglist):
+        """Sets parameters for search
+
+        :param iocvalue: str
+        :param limit: int
+        :param warninglist: bool
+        :return: dict
+        """
         params = {'value': iocvalue, 'limit': limit, 'enforce_warninglist': warninglist}
 
         return params
