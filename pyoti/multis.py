@@ -8,7 +8,7 @@ from OTXv2 import OTXv2, IndicatorTypes
 from pymisp import ExpandedPyMISP
 
 from pyoti.classes import Domain, EmailAddress, FileHash, IPAddress, URL
-from pyoti.exceptions import MaltiverseIOCError, OTXError, PyOTIError, SpamhausError, URLhausHashError, VirusTotalDomainError, VirusTotalHashError, VirusTotalIPError, VirusTotalURLError
+from pyoti.exceptions import MaltiverseIOCError, OTXError, PyOTIError, SpamhausError, URLhausHashError, VirusTotalError
 from pyoti.keys import circlpassive, maltiverse, misp, onyphe, otx, virustotal
 from pyoti.utils import get_hash_type
 
@@ -664,7 +664,7 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
         elif not self.file_hash and scan_id:
             response = self._api_get(url, 'resource', scan_id, allinfo)
         else:
-            raise VirusTotalHashError("/file/report endpoint requires a valid MD5/SHA1/SHA256 hash or scan_id!")
+            raise VirusTotalError("/file/report endpoint requires a valid MD5/SHA1/SHA256 hash or scan_id!")
 
         return response
 
@@ -680,7 +680,7 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
 
             return response
         else:
-            raise VirusTotalIPError("/ip-address/report endpoint requires a valid IP address!")
+            raise VirusTotalError("/ip-address/report endpoint requires a valid IP address!")
 
     def check_url(self, allinfo=False, scan_id=None):
         """Checks URL reputation
@@ -696,6 +696,6 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
         elif not self.url and scan_id:
             response = self._api_get(url, 'resource', scan_id, allinfo)
         else:
-            raise VirusTotalURLError("/url/report endpoint requires a valid URL or scan_id!")
+            raise VirusTotalError("/url/report endpoint requires a valid URL or scan_id!")
 
         return response
