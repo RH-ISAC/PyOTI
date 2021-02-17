@@ -315,7 +315,7 @@ class MISP(Domain, EmailAddress, FileHash, IPAddress, URL):
     def _api(self, ssl):
         """Instantiates ExpandedPyMISP API"""
 
-        m = ExpandedPyMISP(self.api_url, self.api_key, ssl)
+        m = ExpandedPyMISP(self.api_url, self.api_key, cert=ssl)
 
         return m
 
@@ -337,6 +337,7 @@ class MISP(Domain, EmailAddress, FileHash, IPAddress, URL):
         :param ssl: verify cert. default True
         :param limit: number of results. default 50
         :param warninglist: enforce misp warninglist. default True
+        :return: list
         """
 
         params = self._search_params(self.domain, limit, warninglist)
@@ -351,6 +352,7 @@ class MISP(Domain, EmailAddress, FileHash, IPAddress, URL):
         :param ssl: verify cert. default True
         :param limit: number of results. default 50
         :param warninglist: enforce misp warninglist. default True
+        :return: list
         """
 
         params = self._search_params(self.email, limit, warninglist)
@@ -365,6 +367,7 @@ class MISP(Domain, EmailAddress, FileHash, IPAddress, URL):
         :param ssl: verify cert. default True
         :param limit: number of results. default 50
         :param warninglist: enforce misp warninglist. default True
+        :return: list
         """
 
         params = self._search_params(self.file_hash, limit, warninglist)
@@ -379,6 +382,7 @@ class MISP(Domain, EmailAddress, FileHash, IPAddress, URL):
         :param ssl: verify cert. default True
         :param limit: number of results. default 50
         :param warninglist: enforce misp warninglist. default True
+        :return: list
         """
 
         params = self._search_params(self.ip, limit, warninglist)
@@ -393,6 +397,7 @@ class MISP(Domain, EmailAddress, FileHash, IPAddress, URL):
         :param ssl: verify cert. default True
         :param limit: number of results. default 50
         :param warninglist: enforce misp warninglist. default True
+        :return: list
         """
 
         params = self._search_params(self.url, limit, warninglist)
