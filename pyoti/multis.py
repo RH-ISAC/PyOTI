@@ -2,6 +2,7 @@ import aiodns
 import asyncio
 import pypssl
 import requests
+import time
 
 from maltiverse import Maltiverse
 from OTXv2 import OTXv2, IndicatorTypes
@@ -616,7 +617,7 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
     """VirusTotal IOC Analyzer
 
     VirusTotal analyzes files and URLs enabling detection of malicious content
-    using antivirus engines and website scanners.
+    using antivirus engines and website scanners. (VT API v2)
     """
 
     def __init__(self, api_key=virustotal, api_url="https://www.virustotal.com/vtapi/v2/"):
@@ -625,15 +626,17 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
         IPAddress.__init__(self, api_key=api_key, api_url=api_url)
         URL.__init__(self, api_key=api_key, api_url=api_url)
 
-    def _api_get(self, endpoint, ioctype, iocvalue, allinfo):
+    def _api_get(self, endpoint, ioctype, iocvalue, allinfo, scan):
         """GET request to API"""
 
         params = {
             'apikey': self.api_key,
             ioctype: iocvalue
         }
-        if allinfo is True:
+        if allinfo:
             params['allinfo'] = True
+        if scan:
+            params['scan'] = 1
 
         response = requests.request("GET", url=endpoint, params=params)
 
@@ -643,6 +646,7 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
         """Checks Domain reputation
 
         :param allinfo: Default: False. Set True if you have VirusTotal Premium API Key
+        :return: dict
         """
 
         url = f'{self.api_url}domain/report'
@@ -654,8 +658,8 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
         """Checks File Hash Reputation
 
         :param allinfo: Default: False. Set True if you have VirusTotal Premium API Key
-        :param scan_id: Default: None. Set if you want to lookup an already submitted
-        resource instead of looking up by file hash.
+        :param scan_id: Default: None. Set if you want to lookup by scan_id (returned by the /file/scan endpoint).
+        :return: dict
         """
 
         url = f'{self.api_url}file/report'
@@ -672,6 +676,7 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
         """Checks IP reputation
 
         :param allinfo: Default: False. Set True if you have VirusTotal Premium API Key
+        :return: dict
         """
 
         url = f'{self.api_url}ip-address/report'
@@ -682,19 +687,26 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
         else:
             raise VirusTotalError("/ip-address/report endpoint requires a valid IP address!")
 
-    def check_url(self, allinfo=False, scan_id=None):
+    def check_url(self, allinfo=False, scan_id=None, scan=None):
         """Checks URL reputation
 
         :param allinfo: Default: False. Set True if you have VirusTotal Premium API Key
-        :param scan_id: Default: None. Set if you want to lookup an already submitted
-        resource instead of looking up by URL.
+        :param scan_id: Default: None. Set if you want to lookup by scan_id (returned by the /url/scan endpoint).
+        :param scan: Default: None. Set True to submit URL for analysis if no report is found in VT database.
+        :return: dict
         """
 
         url = f'{self.api_url}url/report'
         if self.url:
-            response = self._api_get(url, 'resource', self.url, allinfo)
+            response = self._api_get(url, 'resource', self.url, allinfo, scan)
         elif not self.url and scan_id:
-            response = self._api_get(url, 'resource', scan_id, allinfo)
+            response = self._api_get(url, 'resource', scan_id, allinfo, scan)
+        elif self.url and not scan_id and scan:
+            response = self._api_get(url, 'resource', scan_id, allinfo, scan)
+            sid = response['scan_id']
+            # sleep 5 seconds while VT scans URL before querying for results
+            time.sleep(5)
+            response = self._api_get(url, 'resource', sid, allinfo, scan)
         else:
             raise VirusTotalError("/url/report endpoint requires a valid URL or scan_id!")
 
