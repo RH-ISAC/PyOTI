@@ -12,7 +12,9 @@ PyOTI is a python library to easily query various threat intelligence related AP
 |URLs                        | GoogleSafeBrowsing, LinkPreview, Phishtank                                     |
 |Multis                      | CIRCLPSSL, DNSBlockList, MaltiverseIOC, MISP, Onyphe, OTX, URLhaus, VirusTotal |
 ##
-## Installation
+## Installation 
+(Installation instructions for Windows can be found on the docs directory [here](https://github.com/RH-ISAC/PyOTI/blob/main/docs/windows/README.md).)
+
 Virtualenv (recommended):
 ```bash
 # install/setup virtual environment
@@ -44,6 +46,8 @@ python3 -m pip install .
 ```
 ##
 ## Updating
+(Updating instructions for Windows can be found on the docs directory [here](https://github.com/RH-ISAC/PyOTI/blob/main/docs/windows/README.md).)
+
 Virtualenv:
 ```bash
 # activate virtual environment
