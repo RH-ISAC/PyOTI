@@ -1,7 +1,30 @@
+from disposable_email_domains import blocklist
 from emailrep import EmailRep
 
 from pyoti.classes import EmailAddress
 from pyoti.keys import sublime
+
+
+class DisposableEmails(EmailAddress):
+    """DisposableEmails Email Address Reputation
+
+    This class checks if an email address is contained within a set of known disposable email domains.
+    """
+
+    def check_email(self):
+        """Checks if email domain is a known disposable email service.
+
+        :return: dict
+        """
+        domain = self.email.split("@")[1]
+        info = {'email': self.email}
+        if domain in blocklist:
+            info['disposable'] = True
+        else:
+            info['disposable'] = False
+
+        return info
+
 
 class EmailRepIO(EmailAddress):
     """EmailRepIO Email Address Reputation
