@@ -29,6 +29,7 @@ pytz==2020.4
 requests==2.25.0
 requests-cache==0.5.2
 six==1.15.0
+tld==0.12.5
 typing-extensions==3.7.4.3
 urllib3==1.26.2
 wrapt==1.12.1
