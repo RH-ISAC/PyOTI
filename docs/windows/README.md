@@ -11,7 +11,7 @@ py -m pip install virtualenv
 New-Item -Path "$env:USERPROFILE" -Name "python-venv" -ItemType "directory"
 Set-Location -Path "$env:USERPROFILE\python-venv"
 py -m venv pyoti
-.\Scripts\Activate.ps1
+.\pyoti\Scripts\Activate.ps1
 
 # clone PyOTI repository and copy sample keys file
 git clone https://github.com/RH-ISAC/PyOTI "$env:USERPROFILE\PyOTI"
@@ -42,7 +42,7 @@ Virtualenv:
 # activate virtual environment
 Set-ExecutionPolicy Unrestricted -Force
 Set-Location -Path "$env:USERPROFILE\python-venv"
-.\Scripts\Activate.ps1
+.\pyoti\Scripts\Activate.ps1
 # pull PyOTI repository
 Set-Location -Path "$env:USERPROFILE\PyOTI"
 git pull
