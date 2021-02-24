@@ -5,6 +5,7 @@ attrs==20.3.0
 certifi==2020.11.8
 cffi==1.14.3
 chardet==3.0.4
+checkdmarc==4.3.1
 Deprecated==1.2.10
 disposable-email-domains==0.0.64
 dnspython==2.0.0
