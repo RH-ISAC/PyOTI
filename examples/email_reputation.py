@@ -12,12 +12,17 @@ def run(args):
 
 
 def main():
-    parser = ArgumentParser(prog='EmailRep.io Email Reputation', description='Check EmailRep.io\'s API for email reputation on a given email address.')
-    parser.add_argument('-e', '--email', dest='email', help='email address to check reputation')
+    parser = ArgumentParser(
+        prog="EmailRep.io Email Reputation",
+        description="Check EmailRep.io's API for email reputation on a given email address.",
+    )
+    parser.add_argument(
+        "-e", "--email", dest="email", help="email address to check reputation"
+    )
     args = parser.parse_args()
 
     print(run(args.email))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

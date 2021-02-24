@@ -18,7 +18,7 @@ class MalwareHashRegistry(FileHash):
         detection percentage of a given file hash.
         """
 
-        if get_hash_type(self.file_hash) == 'MD5' or 'SHA-1':
+        if get_hash_type(self.file_hash) == "MD5" or "SHA-1":
             dig = pydig.query(f"{self.file_hash}.malware.hash.cymru.com", "TXT")
             if dig:
                 return_list = self._to_list(dig)
@@ -39,7 +39,7 @@ class MalwareHashRegistry(FileHash):
         result = {}
         epoch = value[0]
         human = time_since_epoch(epoch)
-        result['last_seen'] = human
-        result['detection_pct'] = value[1]
+        result["last_seen"] = human
+        result["detection_pct"] = value[1]
 
         return result

@@ -18,7 +18,11 @@ class GoogleSafeBrowsing(URL):
     content.
     """
 
-    def __init__(self, api_key=googlesafebrowsing, api_url='https://safebrowsing.googleapis.com/v4/threatMatches:find'):
+    def __init__(
+        self,
+        api_key=googlesafebrowsing,
+        api_url="https://safebrowsing.googleapis.com/v4/threatMatches:find",
+    ):
         URL.__init__(self, api_key, api_url)
 
     def _api_post(self, endpoint, platforms):
@@ -27,32 +31,30 @@ class GoogleSafeBrowsing(URL):
         error_code = [400, 403, 429, 500, 503, 504]
 
         data = {
-            "client": {
-                "clientId": "PyOTI",
-                "clientVersion": "0.1"
-            },
+            "client": {"clientId": "PyOTI", "clientVersion": "0.1"},
             "threatInfo": {
-                "threatTypes":
-                    [
-                        "MALWARE",
-                        "SOCIAL_ENGINEERING",
-                        "THREAT_TYPE_UNSPECIFIED",
-                        "POTENTIALLY_HARMFUL_APPLICATION",
-                        "UNWANTED_SOFTWARE"
-                    ],
+                "threatTypes": [
+                    "MALWARE",
+                    "SOCIAL_ENGINEERING",
+                    "THREAT_TYPE_UNSPECIFIED",
+                    "POTENTIALLY_HARMFUL_APPLICATION",
+                    "UNWANTED_SOFTWARE",
+                ],
                 "platformTypes": platforms,
                 "threatEntryTypes": ["URL"],
-                "threatEntries": [{'url': self.url}]
-            }
+                "threatEntries": [{"url": self.url}],
+            },
         }
 
-        headers = {'Content-type': 'application/json'}
+        headers = {"Content-type": "application/json"}
 
-        response = requests.request("POST",
-                                    url=endpoint,
-                                    data=json.dumps(data),
-                                    params={'key': self.api_key},
-                                    headers=headers)
+        response = requests.request(
+            "POST",
+            url=endpoint,
+            data=json.dumps(data),
+            params={"key": self.api_key},
+            headers=headers,
+        )
 
         if response.status_code == 200:
             if response.json() == {}:
@@ -61,7 +63,7 @@ class GoogleSafeBrowsing(URL):
                 return response.json()
 
         elif response.status_code in error_code:
-            raise GSBError(response.json()['error']['message'])
+            raise GSBError(response.json()["error"]["message"])
 
     def check_url(self, platforms=["ANY_PLATFORM"]):
         """Checks URL reputation
@@ -89,10 +91,7 @@ class LinkPreview(URL):
 
         error_code = [400, 401, 403, 404, 423, 425, 426, 429]
 
-        params = {
-            'key': self.api_key,
-            'q': self.url
-        }
+        params = {"key": self.api_key, "q": self.url}
 
         encoded = urlencode(params)
 
@@ -102,7 +101,7 @@ class LinkPreview(URL):
             return response.json()
 
         elif response.status_code in error_code:
-            raise LinkPreviewError(response.json()['description'])
+            raise LinkPreviewError(response.json()["description"])
 
     def check_url(self):
         """Checks URL reputation"""
@@ -119,7 +118,12 @@ class Phishtank(URL):
     phishing on the internet.
     """
 
-    def __init__(self, api_key=phishtank, api_url="http://checkurl.phishtank.com/checkurl/", username=None):
+    def __init__(
+        self,
+        api_key=phishtank,
+        api_url="http://checkurl.phishtank.com/checkurl/",
+        username=None,
+    ):
         self._username = username
         URL.__init__(self, api_key, api_url)
 
@@ -134,14 +138,11 @@ class Phishtank(URL):
     def _api_post(self):
         """POST request to API"""
 
-        new_check_bytes = self.url.encode('ascii')
+        new_check_bytes = self.url.encode("ascii")
         base64_bytes = base64.b64encode(new_check_bytes)
-        base64_new_check = base64_bytes.decode('ascii')
+        base64_new_check = base64_bytes.decode("ascii")
         api_uri = self.api_url + base64_new_check
-        headers = {
-            'app_key': self.api_key,
-            'User-agent': f"phishtank/{self.username}"
-        }
+        headers = {"app_key": self.api_key, "User-agent": f"phishtank/{self.username}"}
 
         response = requests.request("POST", url=api_uri, headers=headers)
 
@@ -153,6 +154,6 @@ class Phishtank(URL):
         response = self._api_post()
 
         try:
-            return response['response']['results']['url0']
+            return response["response"]["results"]["url0"]
         except KeyError:
-            return response['response']['results']
+            return response["response"]["results"]

@@ -7,9 +7,9 @@ from pyoti.domains import IrisInvestigate
 def run(args):
     iris = IrisInvestigate()
 
-    fields = ['Domain', 'Risk Score']
+    fields = ["Domain", "Risk Score"]
 
-    with open('domain_risk.csv', 'w') as csvfile:
+    with open("domain_risk.csv", "w") as csvfile:
         csvwriter = csv.writer(csvfile)
 
         csvwriter.writerow(fields)
@@ -18,16 +18,24 @@ def run(args):
             iris.domain = dmn
             domain_rep = iris.check_domain()
             try:
-                risk_score = domain_rep[0]['domain_risk']['risk_score']
+                risk_score = domain_rep[0]["domain_risk"]["risk_score"]
             except IndexError:
-                risk_score = 'N/A'
+                risk_score = "N/A"
 
             csvwriter.writerow([dmn, risk_score])
 
 
 def main():
-    parser = ArgumentParser(prog='Domain Risk Score to CSV', description='Check Domaintools Iris Investigate for risk score outputted to CSV')
-    parser.add_argument('-f', '--domain_file', dest='domain_file', help='txt file of domains (one per line)')
+    parser = ArgumentParser(
+        prog="Domain Risk Score to CSV",
+        description="Check Domaintools Iris Investigate for risk score outputted to CSV",
+    )
+    parser.add_argument(
+        "-f",
+        "--domain_file",
+        dest="domain_file",
+        help="txt file of domains (one per line)",
+    )
     args = parser.parse_args()
 
     input_file = open(args.domain_file)
@@ -36,5 +44,5 @@ def main():
     print("[*] Finished! Check domain_risk.csv for your domain risk scores.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

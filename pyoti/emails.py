@@ -17,11 +17,11 @@ class DisposableEmails(EmailAddress):
         :return: dict
         """
         domain = self.email.split("@")[1]
-        info = {'email': self.email}
+        info = {"email": self.email}
         if domain in blocklist:
-            info['disposable'] = True
+            info["disposable"] = True
         else:
-            info['disposable'] = False
+            info["disposable"] = False
 
         return info
 

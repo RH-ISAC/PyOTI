@@ -4,6 +4,7 @@ class API:
     :param api_key: API key of the endpoint to connect to
     :param api_url: URL of the API endpoint to connect to
     """
+
     def __init__(self, api_key=None, api_url=None):
         self._api_key = api_key
         self._api_url = api_url
@@ -30,6 +31,7 @@ class Domain(API):
 
     :param domain: Domain to lookup/scan
     """
+
     def __init__(self, api_key=None, api_url=None, domain=None):
         self._domain = domain
         API.__init__(self, api_key, api_url)
@@ -48,6 +50,7 @@ class FileHash(API):
 
         :param file_hash: File hash to lookup/scan
         """
+
     def __init__(self, api_key=None, api_url=None, file_hash=None):
         self._file_hash = file_hash
         API.__init__(self, api_key, api_url)
@@ -66,6 +69,7 @@ class IPAddress(API):
 
         :param ip: IP address to lookup/scan
         """
+
     def __init__(self, api_key=None, api_url=None, ip=None):
         self._ip = ip
         API.__init__(self, api_key, api_url)
@@ -84,6 +88,7 @@ class URL(API):
 
         :param url: URL to lookup/scan
         """
+
     def __init__(self, api_key=None, api_url=None, url=None):
         self._url = url
         API.__init__(self, api_key, api_url)

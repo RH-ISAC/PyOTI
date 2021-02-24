@@ -11,9 +11,9 @@ from pyoti.exceptions import PyOTIError
 
 
 HASH_TYPE = {
-    re.compile(r"^[a-f0-9]{32}(:.+)?$", re.IGNORECASE):  "MD5",
-    re.compile(r"^[a-f0-9]{40}(:.+)?$", re.IGNORECASE):  "SHA-1",
-    re.compile(r"^[a-f0-9]{64}(:.+)?$", re.IGNORECASE):  "SHA-256",
+    re.compile(r"^[a-f0-9]{32}(:.+)?$", re.IGNORECASE): "MD5",
+    re.compile(r"^[a-f0-9]{40}(:.+)?$", re.IGNORECASE): "SHA-1",
+    re.compile(r"^[a-f0-9]{64}(:.+)?$", re.IGNORECASE): "SHA-256",
     re.compile(r"^[a-f0-9]{128}(:.+)?$", re.IGNORECASE): "SHA-512",
 }
 
@@ -37,7 +37,7 @@ def pypkg_exists(pypkg):
 def split_eml_domain(email):
     """Splits Domain from an Email Address"""
 
-    domain = email.split('@')[1]
+    domain = email.split("@")[1]
 
     return domain
 
@@ -50,7 +50,7 @@ def split_url_domain(url):
 
 def time_check_since_epoch(epoch):
     seconds = epoch - int(time.time())
-    hours = (seconds/60)/60
+    hours = (seconds / 60) / 60
     if hours >= 1:
         return True
     else:
@@ -58,7 +58,7 @@ def time_check_since_epoch(epoch):
 
 
 def time_since_epoch(epoch):
-    return datetime.fromtimestamp(int(epoch)).strftime('%Y-%m-%d %H:%M:%S')
+    return datetime.fromtimestamp(int(epoch)).strftime("%Y-%m-%d %H:%M:%S")
 
 
 def time_since_seconds(seconds):

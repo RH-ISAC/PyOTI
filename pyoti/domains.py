@@ -28,9 +28,7 @@ class CheckDMARC(Domain):
 
         pypkg_exists(self.pypkg)
         process = subprocess.Popen(
-            [self.pypkg, self.domain],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            [self.pypkg, self.domain], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         )
         process.wait()
         stdout, stderr = process.communicate()
@@ -100,7 +98,7 @@ class IrisInvestigate(Domain):
         api = self._api()
         iris = api.iris_investigate(domains=self.domain)
 
-        return iris.get('results')
+        return iris.get("results")
 
 
 class WhoisXML(Domain):
@@ -112,16 +110,20 @@ class WhoisXML(Domain):
     :param api_url: WhoisXML API URL
     """
 
-    def __init__(self, api_key=whoisxml, api_url='https://www.whoisxmlapi.com/whoisserver/WhoisService'):
+    def __init__(
+        self,
+        api_key=whoisxml,
+        api_url="https://www.whoisxmlapi.com/whoisserver/WhoisService",
+    ):
         Domain.__init__(self, api_key=api_key, api_url=api_url)
 
     def _api_get(self, endpoint):
         """Get request to API"""
 
         params = {
-            'apiKey': self.api_key,
-            'domainName': self.domain,
-            'outputFormat': 'JSON'
+            "apiKey": self.api_key,
+            "domainName": self.domain,
+            "outputFormat": "JSON",
         }
 
         response = requests.request("GET", url=endpoint, params=params)

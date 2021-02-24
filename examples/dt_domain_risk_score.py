@@ -15,12 +15,17 @@ def run(args):
 
 
 def main():
-    parser = ArgumentParser(prog='IrisInvestigate Domain Risk Score', description='Check Domaintools Iris Investigate for domain risk score of a given domain')
-    parser.add_argument('-d', '--domain', dest='domain', help='domain to check reputation')
+    parser = ArgumentParser(
+        prog="IrisInvestigate Domain Risk Score",
+        description="Check Domaintools Iris Investigate for domain risk score of a given domain",
+    )
+    parser.add_argument(
+        "-d", "--domain", dest="domain", help="domain to check reputation"
+    )
     args = parser.parse_args()
 
     print(run(args.domain))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
