@@ -46,19 +46,21 @@ class GoogleSafeBrowsing(URL):
             },
         }
 
-        headers = {"Content-type": "application/json"}
+        headers = {"Content-type": "application/json", "Accept-Encoding": "gzip"}
 
         response = requests.request(
             "POST",
             url=endpoint,
-            data=json.dumps(data),
+            json=data,
             params={"key": self.api_key},
             headers=headers,
         )
 
         if response.status_code == 200:
             if response.json() == {}:
-                return "No matches!"
+                r = {}
+                r['matches'] = []
+                return r
             else:
                 return response.json()
 
