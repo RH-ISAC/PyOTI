@@ -2,6 +2,7 @@ import csv
 from argparse import ArgumentParser
 
 from pyoti.domains import IrisInvestigate
+from pyoti.utils import split_url_domain
 
 
 def run(args):
@@ -15,7 +16,14 @@ def run(args):
         csvwriter.writerow(fields)
 
         for dmn in args:
-            iris.domain = dmn
+            if 'http' in dmn:
+                iris.domain = split_url_domain(dmn)
+            else:
+                dmnsplt = dmn.split('.')
+                if len(dmnsplt) > 2:
+                    iris.domain = '.'.join(dmnsplt[-2:])
+                else:
+                    iris.domain = dmn
             domain_rep = iris.check_domain()
             try:
                 risk_score = domain_rep[0]["domain_risk"]["risk_score"]
