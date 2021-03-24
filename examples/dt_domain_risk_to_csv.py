@@ -1,5 +1,6 @@
 import csv
 from argparse import ArgumentParser
+from tld.exceptions import TldDomainNotFound
 
 from pyoti.domains import IrisInvestigate
 from pyoti.utils import split_url_domain
@@ -17,7 +18,10 @@ def run(args):
 
         for dmn in args:
             if 'http' in dmn:
-                iris.domain = split_url_domain(dmn)
+                try:
+                    iris.domain = split_url_domain(dmn)
+                except TldDomainNotFound:
+                    continue
             else:
                 dmnsplt = dmn.split('.')
                 if len(dmnsplt) > 2:
