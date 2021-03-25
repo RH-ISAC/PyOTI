@@ -17,7 +17,7 @@ from pyoti.exceptions import (
     URLhausHashError,
     VirusTotalError,
 )
-from pyoti.keys import circlpassive, maltiverse, misp, onyphe, otx, virustotal
+from pyoti.keys import circlpassive, maltiverse, misp, onyphe, otx, pulsedive, virustotal
 from pyoti.utils import get_hash_type
 
 
@@ -573,6 +573,37 @@ class OTX(Domain, FileHash, IPAddress, URL):
             raise OTXError(
                 "/api/v1/indicators/url/{url}/{section} endpoint requires a valid URL!"
             )
+
+
+class Pulsedive(Domain, IPAddress):
+    """Pulsedive Threat Intelligence Made Easy
+
+    Pulsedive is a free threat intelligence platform. Search, scan, and enrich IPs, URLs, domains and other IOCs from OSINT feeds or submit your own.
+    """
+
+    def __init__(self, api_url="https://pulsedive.com/api/", api_key=pulsedive):
+        Domain.__init__(self, api_url=api_url, api_key=api_key)
+        IPAddress.__init__(self, api_url=api_url, api_key=api_key)
+
+    def _api_get(self, endpoint, iocvalue):
+        """GET request to API"""
+        params = {
+            "indicator": iocvalue,
+            "key": self.api_key
+        }
+        info = self.api_url + endpoint
+
+        response = requests.request("GET", url=info, params=params)
+
+        return response.json()
+
+    def check_domain(self):
+        """Checks Domain reputation"""
+        return self._api_get(endpoint="info.php", iocvalue=self.domain)
+
+    def check_ip(self):
+        """Checks IP Address reputation"""
+        return self._api_get(endpoint="info.php", iocvalue=self.ip)
 
 
 class URLhaus(Domain, FileHash, IPAddress, URL):
