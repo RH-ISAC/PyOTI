@@ -17,7 +17,16 @@ from pyoti.exceptions import (
     URLhausHashError,
     VirusTotalError,
 )
-from pyoti.keys import circlpassive, maltiverse, misp, onyphe, otx, pulsedive, virustotal
+from pyoti.keys import (
+    circlpassive,
+    hybridanalysis,
+    maltiverse,
+    misp,
+    onyphe,
+    otx,
+    pulsedive,
+    virustotal,
+)
 from pyoti.utils import get_hash_type
 
 
@@ -254,6 +263,92 @@ class DNSBlockList(Domain, IPAddress):
 
         except aiodns.error.DNSError:
             return
+
+
+class HybridAnalysis(FileHash, URL):
+    """HybridAnalysis Malware Analysis
+
+    HybridAnalysis is a free malware analysis service for the community that detects and analyzes unknown threats using a unique Hybrid Analysis technology.
+    """
+
+    def __init__(
+        self,
+        api_url="https://www.hybrid-analysis.com/api/v2/",
+        api_key=hybridanalysis,
+        job_id=None,
+    ):
+        self._job_id = job_id
+        FileHash.__init__(self, api_url=api_url, api_key=api_key)
+        URL.__init__(self, api_url=api_url, api_key=api_key)
+
+    @property
+    def job_id(self):
+        return self._job_id
+
+    @job_id.setter
+    def job_id(self, value):
+        self._job_id = value
+
+    def _api_post(self, endpoint, ioctype, iocvalue):
+        """POST request to API"""
+        headers = {
+            "Accept": "application/json",
+            "Accept-Encoding": "gzip",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "PyOTI 0.1",
+            "api-key": self.api_key,
+        }
+
+        data = {ioctype: iocvalue}
+
+        uri = self.api_url + endpoint
+        response = requests.request("POST", url=uri, headers=headers, data=data)
+
+        return response.json()
+
+    def _api_get(self, endpoint):
+        """GET request to API"""
+        headers = {
+            "Accept": "application/json",
+            "Accept-Encoding": "gzip",
+            "User-Agent": "PyOTI 0.1",
+            "api-key": self.api_key,
+        }
+
+        uri = self.api_url + endpoint
+        response = requests.request("GET", url=uri, headers=headers)
+
+        return response.json()
+
+    def check_hash(self):
+        """Checks File Hash reputation
+
+        :return: dict
+        """
+        response = self._api_post(
+            endpoint="search/hash", ioctype="hash", iocvalue=self.file_hash
+        )
+        self.job_id = response[1]["job_id"]
+        return response
+
+    def check_url(self):
+        """Checks URL reputation
+
+        :return: dict
+        """
+        response = self._api_post(
+            endpoint="search/terms", ioctype="url", iocvalue=self.url
+        )["result"]
+        self.job_id = response[0]["job_id"]
+        return response
+
+    def check_report(self, sandbox_report="summary"):
+        """Checks for summary of a submission
+
+        :param sandbox_report: default summary (see https://www.hybrid-analysis.com/docs/api/v2/)
+        :return: dict
+        """
+        return self._api_get(endpoint=f"report/{self.job_id}/{sandbox_report}")
 
 
 class MaltiverseIOC(Domain, FileHash, IPAddress, URL):
@@ -587,10 +682,7 @@ class Pulsedive(Domain, IPAddress):
 
     def _api_get(self, endpoint, iocvalue):
         """GET request to API"""
-        params = {
-            "indicator": iocvalue,
-            "key": self.api_key
-        }
+        params = {"indicator": iocvalue, "key": self.api_key}
         info = self.api_url + endpoint
 
         response = requests.request("GET", url=info, params=params)
