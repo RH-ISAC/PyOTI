@@ -25,6 +25,7 @@ from pyoti.keys import (
     onyphe,
     otx,
     pulsedive,
+    urlscan,
     virustotal,
 )
 from pyoti.utils import get_hash_type
@@ -782,6 +783,56 @@ class URLhaus(Domain, FileHash, IPAddress, URL):
             raise PyOTIError(
                 "You must supply either an urlid or URL to check, but not both!"
             )
+
+
+class URLscan(Domain, FileHash, IPAddress, URL):
+    """URLscan a sanbox for the web
+
+    URLscan is a free service to scan and analyse websites.
+    """
+
+    def __init__(self, api_url="https://urlscan.io/api/v1/", api_key=urlscan, id=None):
+        self._id = id
+        Domain.__init__(self, api_url=api_url, api_key=api_key)
+        FileHash.__init__(self, api_url=api_url, api_key=api_key)
+        IPAddress.__init__(self, api_url=api_url, api_key=api_key)
+        URL.__init__(self, api_url=api_url, api_key=api_key)
+
+    @property
+    def id(self):
+        return self._id
+
+    @id.setter
+    def id(self, value):
+        self._id = value
+
+    def _api_get(self, endpoint, params):
+        rparams = params
+
+        uri = self.api_url + endpoint
+        response = requests.request("GET", url=uri, params=rparams)
+
+        return response.json()
+
+    def check_domain(self, contacted=False, limit=100):
+        """Checks Domain reputation
+
+        :param contacted: default False (domain was contacted but isn't the page/primary domain)
+        :param limit: default 100 (number of results to return, max: 10000)
+        :return: dict
+        """
+
+        if contacted:
+            params = {"q": f"domain:{self.domain} AND NOT page.domain:{self.domain}", "size": limit}
+        else:
+            params = {"q": f"domain:{self.domain}", "size": limit}
+
+        return self._api_get(endpoint="search/", params=params)
+
+    def check_hash(self, limit=100):
+        params = {"q": f"hash:{self.file_hash}", "size": limit}
+
+        return self._api_get(endpoint="search/", params=params)
 
 
 class VirusTotal(Domain, FileHash, IPAddress, URL):
