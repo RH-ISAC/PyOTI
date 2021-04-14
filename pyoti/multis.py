@@ -248,7 +248,7 @@ class DNSBlockList(Domain, IPAddress):
         try:
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
-            resolver = aiodns.DNSResolver(loop=loop, nameservers=["9.9.9.9"])
+            resolver = aiodns.DNSResolver(loop=loop, nameservers=["208.67.222.222"])
 
             async def query(name, query_type):
                 return await resolver.query(name, query_type)
