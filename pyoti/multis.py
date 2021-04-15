@@ -850,7 +850,7 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
         IPAddress.__init__(self, api_key=api_key, api_url=api_url)
         URL.__init__(self, api_key=api_key, api_url=api_url)
 
-    def _api_get(self, endpoint, ioctype, iocvalue, allinfo, scan):
+    def _api_get(self, endpoint, ioctype, iocvalue, allinfo, scan=None):
         """GET request to API"""
 
         params = {"apikey": self.api_key, ioctype: iocvalue}
