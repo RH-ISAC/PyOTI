@@ -20,7 +20,7 @@ Windows instructions can be found in the docs directory [here](https://github.co
 Linux instructions can be found in the docs directory [here](https://github.com/RH-ISAC/PyOTI/blob/main/docs/linux/README.md).
 
 ## License
-Copyright © 2020, RH-ISAC 
+Copyright © 2021, RH-ISAC 
 
 This work is free software. You may redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or
 at your option, any later version.
