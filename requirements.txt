@@ -1,5 +1,5 @@
 aiodns==2.0.0
-aiohttp==3.7.3
+aiohttp>=3.7.4
 async-timeout==3.0.1
 attrs==20.3.0
 certifi==2020.11.8
@@ -32,7 +32,7 @@ requests-cache==0.5.2
 six==1.15.0
 tld==0.12.5
 typing-extensions==3.7.4.3
-urllib3==1.26.2
+urllib3==1.26.4
 wrapt==1.12.1
 xmltodict==0.12.0
 yarl==1.6.3
