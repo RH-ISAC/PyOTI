@@ -814,9 +814,19 @@ class URLscan(Domain, FileHash, IPAddress, URL):
 
         return response.json()
 
-    def check_domain(self, contacted=False, limit=100):
-        """Checks Domain reputation
+    def _escape_url(self, url):
+        """Escape URL for elastic syntax
 
+        :param url: str
+        :return: str
+        """
+        url = url.replace(":", "\:")
+        url = url.replace("/", "\/")
+
+        return url
+
+    def search_domain(self, contacted=False, limit=100):
+        """
         :param contacted: default False (domain was contacted but isn't the page/primary domain)
         :param limit: default 100 (number of results to return, max: 10000)
         :return: dict
@@ -829,10 +839,44 @@ class URLscan(Domain, FileHash, IPAddress, URL):
 
         return self._api_get(endpoint="search/", params=params)
 
-    def check_hash(self, limit=100):
+    def search_hash(self, limit=100):
         params = {"q": f"hash:{self.file_hash}", "size": limit}
 
         return self._api_get(endpoint="search/", params=params)
+
+    def search_ip(self, limit=100):
+        params = {"q": f"page.ip:{self.ip}", "size": limit}
+
+        return self._api_get(endpoint="search/", params=params)
+
+    def search_url(self, limit=100):
+        params = {"q": f"page.url:{self._escape_url(self.url)}", "size": limit}
+
+        return self._api_get(endpoint="search/", params=params)
+
+    def check_domain(self, uuid=None):
+        if uuid:
+            return self._api_get(endpoint=f"result/{uuid}", params=None)
+        else:
+            raise PyOTIError("Missing result UUID. Use search_domain method to get result UUID.")
+
+    def check_hash(self, uuid=None):
+        if uuid:
+            return self._api_get(endpoint=f"result/{uuid}", params=None)
+        else:
+            raise PyOTIError("Missing result UUID. Use search_hash method to get result UUID.")
+
+    def check_ip(self, uuid=None):
+        if uuid:
+            return self._api_get(endpoint=f"result/{uuid}", params=None)
+        else:
+            raise PyOTIError("Missing result UUID. Use search_ip method to get result UUID.")
+
+    def check_url(self, uuid=None):
+        if uuid:
+            return self._api_get(endpoint=f"result/{uuid}", params=None)
+        else:
+            raise PyOTIError("Missing result UUID. Use search_url method to get result UUID.")
 
 
 class VirusTotal(Domain, FileHash, IPAddress, URL):
