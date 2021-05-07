@@ -17,17 +17,6 @@ from pyoti.exceptions import (
     URLhausHashError,
     VirusTotalError,
 )
-from pyoti.keys import (
-    circlpassive,
-    hybridanalysis,
-    maltiverse,
-    misp,
-    onyphe,
-    otx,
-    pulsedive,
-    urlscan,
-    virustotal,
-)
 from pyoti.utils import get_hash_type
 
 
@@ -37,7 +26,7 @@ class CIRCLPSSL(FileHash, IPAddress):
     CIRCL Passive SSL stores historical X.509 certificates seen per IP address.
     """
 
-    def __init__(self, api_key=circlpassive):
+    def __init__(self, api_key):
         FileHash.__init__(self, api_key=api_key)
         IPAddress.__init__(self, api_key=api_key)
 
@@ -274,8 +263,8 @@ class HybridAnalysis(FileHash, URL):
 
     def __init__(
         self,
+        api_key,
         api_url="https://www.hybrid-analysis.com/api/v2/",
-        api_key=hybridanalysis,
         job_id=None,
     ):
         self._job_id = job_id
@@ -358,7 +347,7 @@ class MaltiverseIOC(Domain, FileHash, IPAddress, URL):
     Maltiverse is an open IOC search engine providing collective intelligence.
     """
 
-    def __init__(self, api_key=maltiverse):
+    def __init__(self, api_key):
         Domain.__init__(self, api_key=api_key)
         FileHash.__init__(self, api_key=api_key)
         IPAddress.__init__(self, api_key=api_key)
@@ -429,7 +418,7 @@ class MISP(Domain, EmailAddress, FileHash, IPAddress, URL):
      indicators.
     """
 
-    def __init__(self, api_key=misp):
+    def __init__(self, api_key):
         Domain.__init__(self, api_key=api_key)
         EmailAddress.__init__(self, api_key=api_key)
         FileHash.__init__(self, api_key=api_key)
@@ -540,7 +529,7 @@ class Onyphe(Domain, IPAddress):
     listening to internet background noise.
     """
 
-    def __init__(self, api_key=onyphe, api_url="https://www.onyphe.io/api/v2/"):
+    def __init__(self, api_key, api_url="https://www.onyphe.io/api/v2/"):
         Domain.__init__(self, api_key=api_key, api_url=api_url)
         IPAddress.__init__(self, api_key=api_key, api_url=api_url)
 
@@ -586,7 +575,7 @@ class OTX(Domain, FileHash, IPAddress, URL):
     and threat data producers to share research and investigate new threats.
     """
 
-    def __init__(self, api_key=otx):
+    def __init__(self, api_key):
         Domain.__init__(self, api_key=api_key)
         FileHash.__init__(self, api_key=api_key)
         IPAddress.__init__(self, api_key=api_key)
@@ -677,9 +666,9 @@ class Pulsedive(Domain, IPAddress):
     Pulsedive is a free threat intelligence platform. Search, scan, and enrich IPs, URLs, domains and other IOCs from OSINT feeds or submit your own.
     """
 
-    def __init__(self, api_url="https://pulsedive.com/api/", api_key=pulsedive):
-        Domain.__init__(self, api_url=api_url, api_key=api_key)
-        IPAddress.__init__(self, api_url=api_url, api_key=api_key)
+    def __init__(self, api_key, api_url="https://pulsedive.com/api/"):
+        Domain.__init__(self, api_key=api_key, api_url=api_url)
+        IPAddress.__init__(self, api_key=api_key, api_url=api_url)
 
     def _api_get(self, endpoint, iocvalue):
         """GET request to API"""
@@ -791,12 +780,12 @@ class URLscan(Domain, FileHash, IPAddress, URL):
     URLscan is a free service to scan and analyse websites.
     """
 
-    def __init__(self, api_url="https://urlscan.io/api/v1/", api_key=urlscan, id=None):
+    def __init__(self, api_key, api_url="https://urlscan.io/api/v1/", id=None):
         self._id = id
-        Domain.__init__(self, api_url=api_url, api_key=api_key)
-        FileHash.__init__(self, api_url=api_url, api_key=api_key)
-        IPAddress.__init__(self, api_url=api_url, api_key=api_key)
-        URL.__init__(self, api_url=api_url, api_key=api_key)
+        Domain.__init__(self, api_key=api_key, api_url=api_url)
+        FileHash.__init__(self,  api_key=api_key, api_url=api_url)
+        IPAddress.__init__(self,  api_key=api_key, api_url=api_url)
+        URL.__init__(self, api_key=api_key, api_url=api_url)
 
     @property
     def id(self):
@@ -887,7 +876,7 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
     """
 
     def __init__(
-        self, api_key=virustotal, api_url="https://www.virustotal.com/vtapi/v2/"
+        self, api_key, api_url="https://www.virustotal.com/vtapi/v2/"
     ):
         Domain.__init__(self, api_key=api_key, api_url=api_url)
         FileHash.__init__(self, api_key=api_key, api_url=api_url)

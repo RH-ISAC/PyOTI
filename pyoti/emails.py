@@ -2,7 +2,6 @@ from disposable_email_domains import blocklist
 from emailrep import EmailRep
 
 from pyoti.classes import EmailAddress
-from pyoti.keys import sublime
 
 
 class DisposableEmails(EmailAddress):
@@ -37,7 +36,7 @@ class EmailRepIO(EmailAddress):
     more to predict the risk of an email address.
     """
 
-    def __init__(self, api_key=sublime):
+    def __init__(self, api_key):
         EmailAddress.__init__(self, api_key=api_key)
 
     def _api(self):

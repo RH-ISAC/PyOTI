@@ -6,7 +6,6 @@ import subprocess
 from domaintools import API
 
 from pyoti.classes import Domain
-from pyoti.keys import circlpassive, domaintools, whoisxml
 from pyoti.utils import pypkg_exists
 
 
@@ -48,7 +47,7 @@ class CIRCLPDNS(Domain):
     CIRCL Passive DNS stores historical DNS records from various resources including malware analysis or partners.
     """
 
-    def __init__(self, api_key=circlpassive):
+    def __init__(self, api_key):
         Domain.__init__(self, api_key=api_key)
 
     def _api(self):
@@ -81,7 +80,7 @@ class IrisInvestigate(Domain):
     :param api_key: Domaintools API key
     """
 
-    def __init__(self, api_key=domaintools):
+    def __init__(self, api_key):
         Domain.__init__(self, api_key)
 
     def _api(self):
@@ -112,7 +111,7 @@ class WhoisXML(Domain):
 
     def __init__(
         self,
-        api_key=whoisxml,
+        api_key,
         api_url="https://www.whoisxmlapi.com/whoisserver/WhoisService",
     ):
         Domain.__init__(self, api_key=api_key, api_url=api_url)

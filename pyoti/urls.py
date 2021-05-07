@@ -6,7 +6,6 @@ from urllib.parse import urlencode
 
 from pyoti.classes import URL
 from pyoti.exceptions import GSBError, LinkPreviewError
-from pyoti.keys import googlesafebrowsing, linkpreview, phishtank
 from pyoti.utils import xml_to_json
 
 
@@ -20,7 +19,7 @@ class GoogleSafeBrowsing(URL):
 
     def __init__(
         self,
-        api_key=googlesafebrowsing,
+        api_key,
         api_url="https://safebrowsing.googleapis.com/v4/threatMatches:find",
     ):
         URL.__init__(self, api_key, api_url)
@@ -85,7 +84,7 @@ class LinkPreview(URL):
     LinkPreview API provides basic website information from any given URL.
     """
 
-    def __init__(self, api_key=linkpreview, api_url="https://api.linkpreview.net"):
+    def __init__(self, api_key, api_url="https://api.linkpreview.net"):
         URL.__init__(self, api_key, api_url)
 
     def _api_get(self):
@@ -122,7 +121,7 @@ class Phishtank(URL):
 
     def __init__(
         self,
-        api_key=phishtank,
+        api_key,
         api_url="http://checkurl.phishtank.com/checkurl/",
         username=None,
     ):

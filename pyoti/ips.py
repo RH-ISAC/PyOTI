@@ -3,7 +3,6 @@ import requests
 
 from pyoti.exceptions import SpamhausError
 from pyoti.classes import IPAddress
-from pyoti.keys import abuseipdb, spamhausintel
 from pyoti.utils import time_check_since_epoch
 
 
@@ -19,7 +18,7 @@ class AbuseIPDB(IPAddress):
     """
 
     def __init__(
-        self, api_key=abuseipdb, api_url="https://api.abuseipdb.com/api/v2/check"
+        self, api_key, api_url="https://api.abuseipdb.com/api/v2/check"
     ):
         IPAddress.__init__(self, api_key, api_url)
 
@@ -58,7 +57,7 @@ class SpamhausIntel(IPAddress):
     """
 
     def __init__(
-        self, api_key=spamhausintel, api_url="https://api.spamhaus.org/api/v1/login"
+        self, api_key, api_url="https://api.spamhaus.org/api/v1/login"
     ):
         self._token = None
         self._expires = None
@@ -66,8 +65,8 @@ class SpamhausIntel(IPAddress):
 
     def _api_login(self):
         data = {
-            "username": spamhausintel.split(":")[0],
-            "password": spamhausintel.split(":")[1],
+            "username": self.api_key.split(":")[0],
+            "password": self.api_key.split(":")[1],
             "realm": "intel",
         }
 
