@@ -172,7 +172,7 @@ class ProofpointURLDecoder(URL):
 
     def __init__(self):
         self.ud_pattern = re.compile(r'https://urldefense(?:\.proofpoint)?\.com/(v[0-9])/')
-        self.v1_pattern = re.compile(r'u=(?P<url>.+?)&k=')
+        self.v1_pattern = re.compile(r'u=(?P<url>.+?)&k|amp;k=')
         self.v2_pattern = re.compile(r'u=(?P<url>.+?)&[dc]=')
         self.v3_pattern = re.compile(r'v3/__(?P<url>.+?)__;(?P<enc_bytes>.*?)!')
         self.v3_token_pattern = re.compile(r"\*(\*.)?")
