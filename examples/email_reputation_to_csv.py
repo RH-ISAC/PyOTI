@@ -2,10 +2,11 @@ import csv
 from argparse import ArgumentParser
 
 from pyoti.emails import EmailRepIO
+from keys import sublime
 
 
 def run(args):
-    eml = EmailRepIO()
+    eml = EmailRepIO(api_key=sublime)
 
     fields = [
         "Email Address",

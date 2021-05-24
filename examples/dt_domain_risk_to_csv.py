@@ -4,10 +4,11 @@ from tld.exceptions import TldDomainNotFound
 
 from pyoti.domains import IrisInvestigate
 from pyoti.utils import split_url_domain
+from keys import domaintools
 
 
 def run(args):
-    iris = IrisInvestigate()
+    iris = IrisInvestigate(api_key=domaintools)
 
     fields = ["Domain", "Risk Score"]
 

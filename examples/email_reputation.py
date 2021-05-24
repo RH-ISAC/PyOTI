@@ -1,10 +1,11 @@
 from argparse import ArgumentParser
 
 from pyoti.emails import EmailRepIO
+from keys import sublime
 
 
 def run(args):
-    eml = EmailRepIO()
+    eml = EmailRepIO(api_key=sublime)
     eml.email = args
     eml_rep = eml.check_email()
 
