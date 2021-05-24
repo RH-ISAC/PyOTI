@@ -182,6 +182,7 @@ class ProofpointURLDecoder(URL):
         for value in run_values:
             self.v3_run_mapping[value] = run_length
             run_length += 1
+        self.maketrans = str.maketrans
 
     def _decode(self, rewritten_url):
         match = self.ud_pattern.search(rewritten_url)
@@ -211,7 +212,7 @@ class ProofpointURLDecoder(URL):
         match = self.v2_pattern.search(rewritten_url)
         if match:
             special_encoded_url = match.group('url')
-            trans = maketrans('-_', '%/')
+            trans = self.maketrans('-_', '%/')
             url_encoded_url = special_encoded_url.translate(trans)
             html_encoded_url = unquote(url_encoded_url)
             url = unescape(html_encoded_url)
