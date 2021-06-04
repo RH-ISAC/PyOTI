@@ -329,8 +329,12 @@ class HybridAnalysis(FileHash, URL):
         response = self._api_post(
             endpoint="search/terms", ioctype="url", iocvalue=self.url
         )["result"]
-        self.job_id = response[0]["job_id"]
-        return response
+        try:
+            self.job_id = response[0]["job_id"]
+            return response
+        except IndexError:
+            # this exception indicates no results found!
+            return
 
     def check_report(self, sandbox_report="summary"):
         """Checks for summary of a submission
