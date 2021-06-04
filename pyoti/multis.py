@@ -702,7 +702,7 @@ class URLhaus(Domain, FileHash, IPAddress, URL):
     """
 
     def __init__(self, api_url="https://urlhaus-api.abuse.ch/v1/", url_id=None):
-        self.url_id = url_id
+        self._url_id = url_id
 
         Domain.__init__(self, api_url=api_url)
         FileHash.__init__(self, api_url=api_url)
@@ -711,11 +711,11 @@ class URLhaus(Domain, FileHash, IPAddress, URL):
 
     @property
     def url_id(self):
-        return self.url_id
+        return self._url_id
 
     @url_id.setter
     def url_id(self, value):
-        self.url_id = value
+        self._url_id = value
 
     def _api_post(self, endpoint, ioctype, iocvalue):
         """POST request to API"""
@@ -754,7 +754,7 @@ class URLhaus(Domain, FileHash, IPAddress, URL):
                 "/payload/ endpoint requires a valid MD5 or SHA-256 hash!"
             )
 
-        return response.json()
+        return response
 
     def check_ip(self):
         """Checks IP reputation"""
@@ -767,11 +767,11 @@ class URLhaus(Domain, FileHash, IPAddress, URL):
         if not self.url_id and self.url:
             response = self._api_post(f"{self.api_url}url/", "url", self.url)
 
-            return response.json()
+            return response
         elif not self.url and self.url_id:
             response = self._api_post(f"{self.api_url}urlid/", "urlid", self.url_id)
 
-            return response.json()
+            return response
         else:
             raise PyOTIError(
                 "You must supply either an urlid or URL to check, but not both!"
