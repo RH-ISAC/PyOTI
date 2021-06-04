@@ -127,7 +127,7 @@ class Phishtank(URL):
         self,
         api_key,
         api_url="http://checkurl.phishtank.com/checkurl/",
-        username=None,
+        username="PyOTI",
     ):
         self._username = username
         URL.__init__(self, api_key, api_url)
