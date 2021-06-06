@@ -843,7 +843,7 @@ class URLscan(Domain, FileHash, IPAddress, URL):
         return self._api_get(endpoint="search/", params=params)
 
     def search_url(self, limit=100):
-        params = {"q": f"page.url:{self._escape_url(self.url)}", "size": limit}
+        params = {"q": f"task.url:{self._escape_url(self.url)}", "size": limit}
 
         return self._api_get(endpoint="search/", params=params)
 
