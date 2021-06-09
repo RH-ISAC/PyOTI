@@ -422,12 +422,12 @@ class MISP(Domain, EmailAddress, FileHash, IPAddress, URL):
      indicators.
     """
 
-    def __init__(self, api_key):
-        Domain.__init__(self, api_key=api_key)
-        EmailAddress.__init__(self, api_key=api_key)
-        FileHash.__init__(self, api_key=api_key)
-        IPAddress.__init__(self, api_key=api_key)
-        URL.__init__(self, api_key=api_key)
+    def __init__(self, api_key, api_url):
+        Domain.__init__(self, api_key=api_key, api_url=api_url)
+        EmailAddress.__init__(self, api_key=api_key, api_url=api_url)
+        FileHash.__init__(self, api_key=api_key, api_url=api_url)
+        IPAddress.__init__(self, api_key=api_key, api_url=api_url)
+        URL.__init__(self, api_key=api_key, api_url=api_url)
 
     def _api(self, ssl):
         """Instantiates ExpandedPyMISP API"""
