@@ -429,7 +429,7 @@ class MISP(Domain, EmailAddress, FileHash, IPAddress, URL):
         IPAddress.__init__(self, api_key=api_key, api_url=api_url)
         URL.__init__(self, api_key=api_key, api_url=api_url)
 
-    def _api(self, ssl=True):
+    def _api(self, ssl):
         """Instantiates ExpandedPyMISP API"""
 
         m = ExpandedPyMISP(self.api_url, self.api_key, ssl=ssl)
