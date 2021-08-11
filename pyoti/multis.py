@@ -1,5 +1,6 @@
 import aiodns
 import asyncio
+import base64
 import pypssl
 import requests
 import time
@@ -872,7 +873,7 @@ class URLscan(Domain, FileHash, IPAddress, URL):
             raise PyOTIError("Missing result UUID. Use search_url method to get result UUID.")
 
 
-class VirusTotal(Domain, FileHash, IPAddress, URL):
+class VirusTotalV2(Domain, FileHash, IPAddress, URL):
     """VirusTotal IOC Analyzer
 
     VirusTotal analyzes files and URLs enabling detection of malicious content
@@ -975,3 +976,69 @@ class VirusTotal(Domain, FileHash, IPAddress, URL):
             )
 
         return response
+
+
+class VirusTotalV3(Domain, FileHash, IPAddress, URL):
+    """VirusTotal IOC Analyzer
+
+    VirusTotal analyzes files and URLs enabling detection of malicious content
+    using antivirus engines and website scanners. (VT API v3)
+    """
+
+    def __init__(
+        self, api_key, api_url="https://www.virustotal.com/api/v3"
+    ):
+        Domain.__init__(self, api_key=api_key, api_url=api_url)
+        FileHash.__init__(self, api_key=api_key, api_url=api_url)
+        IPAddress.__init__(self, api_key=api_key, api_url=api_url)
+        URL.__init__(self, api_key=api_key, api_url=api_url)
+
+    def _api_get(self, url):
+        """GET request to API"""
+
+        headers = {'x-apikey': self.api_key}
+
+        response = requests.request("GET", url=url, headers=headers)
+
+        return response.json()
+
+    def check_domain(self):
+        """Retrieve information about an Internet domain"""
+
+        if self.domain:
+            url = f"{self.api_url}/domains/{self.domain}"
+            response = self._api_get(url=url)
+
+            return response
+
+    def check_hash(self):
+        """Retrieve information about a file"""
+
+        if get_hash_type(self.file_hash) == "MD5" or "SHA-1" or "SHA-256":
+            url = f"{self.api_url}/files/{self.file_hash}"
+            response = self._api_get(url=url)
+
+            return response
+        else:
+            raise VirusTotalError(
+                "/files/{id} endpoint requires a valid MD5/SHA1/SHA256 hash or scan_id!"
+            )
+
+    def check_ip(self):
+        """Retrieve information about an IP address"""
+
+        if self.ip:
+            url = f"{self.api_url}/ip_addresses/{self.ip}"
+            response = self._api_get(url=url)
+
+            return response
+
+    def check_url(self):
+        """Retrieve information about a URL"""
+
+        if self.url:
+            url_id = base64.urlsafe_b64encode(self.url.encode()).decode().strip("=")
+            url = f"{self.api_url}/urls/{url_id}"
+            response = self._api_get(url=url)
+
+            return response
