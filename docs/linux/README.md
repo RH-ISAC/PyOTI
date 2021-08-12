@@ -10,9 +10,9 @@ source ~/python-venv/pyoti/bin/activate
 # clone PyOTI repository and copy sample keys file
 git clone https://github.com/RH-ISAC/PyOTI ~/PyOTI
 cd ~/PyOTI
-cp pyoti/keys.py.sample pyoti/keys.py
+cp examples/keys.py.sample examples/keys.py
 # make sure to fill in your API secrets!
-vim pyoti/keys.py
+vim examples/keys.py
 # install requirements and PyOTI library
 python3 -m pip install -r requirements.txt
 python3 -m pip install .
@@ -22,9 +22,9 @@ No virtualenv:
 # clone PyOTI repository and copy sample keys file
 git clone https://github.com/RH-ISAC/PyOTI ~/PyOTI
 cd ~/PyOTI
-cp pyoti/keys.py.sample pyoti/keys.py
+cp examples/keys.py.sample examples/keys.py
 # make sure to fill in your API secrets!
-vim pyoti/keys.py
+vim examples/keys.py
 # install requirements and PyOTI library
 python3 -m pip install -r requirements.txt
 python3 -m pip install .
@@ -40,7 +40,7 @@ cd ~/PyOTI
 git pull
 bash update_keys.sh 
 # make sure to fill in your updated API secrets!
-vim pyoti/keys.py
+vim examples/keys.py
 # make sure requirements and PyOTI library are updated
 python3 -m pip install -r requirements.txt
 python3 -m pip install .
@@ -52,7 +52,7 @@ cd ~/PyOTI
 git pull
 bash update_keys.sh 
 # make sure to fill in your updated API secrets!
-vim pyoti/keys.py
+vim examples/keys.py
 # make sure requirements and PyOTI library are updated
 python3 -m pip install -r requirements.txt
 python3 -m pip install .

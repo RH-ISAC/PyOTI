@@ -16,9 +16,9 @@ py -m venv pyoti
 # clone PyOTI repository and copy sample keys file
 git clone https://github.com/RH-ISAC/PyOTI "$env:USERPROFILE\PyOTI"
 Set-Location -Path "$env:USERPROFILE\PyOTI"
-Copy-Item "$env:USERPROFILE\PyOTI\pyoti\keys.py.sample" -Destination "$env:USERPROFILE\PyOTI\pyoti\keys.py"
+Copy-Item "$env:USERPROFILE\PyOTI\examples\keys.py.sample" -Destination "$env:USERPROFILE\PyOTI\examples\keys.py"
 # make sure to fill in your API secrets!
-notepad "$env:USERPROFILE\PyOTI\pyoti\keys.py"
+notepad "$env:USERPROFILE\PyOTI\examples\keys.py"
 # install requirements and PyOTI library
 py -m pip install -r requirements.txt
 py -m pip install .
@@ -28,9 +28,9 @@ No virtualenv:
 # clone PyOTI repository and copy sample keys file
 git clone https://github.com/RH-ISAC/PyOTI "$env:USERPROFILE\PyOTI"
 Set-Location -Path "$env:USERPROFILE\PyOTI"
-Copy-Item "$env:USERPROFILE\PyOTI\pyoti\keys.py.sample" -Destination "$env:USERPROFILE\PyOTI\pyoti\keys.py"
+Copy-Item "$env:USERPROFILE\PyOTI\examples\keys.py.sample" -Destination "$env:USERPROFILE\PyOTI\examples\keys.py"
 # make sure to fill in your API secrets!
-notepad "$env:USERPROFILE\PyOTI\pyoti\keys.py"
+notepad "$env:USERPROFILE\PyOTI\examples\keys.py"
 # install requirements and PyOTI library
 py -m pip install -r requirements.txt
 py -m pip install .
@@ -48,7 +48,7 @@ Set-Location -Path "$env:USERPROFILE\PyOTI"
 git pull
 powershell .\update_keys.ps1 
 # make sure to fill in your updated API secrets!
-notepad "$env:USERPROFILE\PyOTI\pyoti\keys.py"
+notepad "$env:USERPROFILE\PyOTI\examples\keys.py"
 # make sure requirements and PyOTI library are updated
 py -m pip install -r requirements.txt
 py -m pip install .
@@ -61,7 +61,7 @@ Set-Location -Path "$env:USERPROFILE\PyOTI"
 git pull
 powershell .\update_keys.ps1 
 # make sure to fill in your updated API secrets!
-notepad "$env:USERPROFILE\PyOTI\pyoti\keys.py"
+notepad "$env:USERPROFILE\PyOTI\examples\keys.py"
 # make sure requirements and PyOTI library are updated
 py -m pip install -r requirements.txt
 py -m pip install .
