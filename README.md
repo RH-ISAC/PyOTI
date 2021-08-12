@@ -13,7 +13,7 @@ Currently, PyOTI only performs queries to check if an indicator of compromise ha
 |Hashes                      | MalwareHashRegistry                                                            |
 |IP Addresses                | AbuseIPDB, SpamhausIntel                                                       |
 |URLs                        | GoogleSafeBrowsing, LinkPreview, Phishtank, ProofpointURLDecoder               |
-|Multis                      | CIRCLPSSL, DNSBlockList, HybridAnalysis, MaltiverseIOC, MISP, Onyphe, OTX, Pulsedive, URLhaus, URLscan, VirusTotal |
+|Multis                      | CIRCLPSSL, DNSBlockList, HybridAnalysis, MaltiverseIOC, MISP, Onyphe, OTX, Pulsedive, URLhaus, URLscan, VirusTotalV2, VirusTotalV3 |
 
 ***
 ## Installing/Updating 
