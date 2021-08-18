@@ -7,7 +7,7 @@ cffi==1.14.3
 chardet==3.0.4
 checkdmarc==4.3.1
 defang==0.5.3
-Deprecated==1.2.10
+Deprecated==1.2.12
 disposable-email-domains==0.0.64
 dnspython==2.0.0
 domaintools-api==0.5.2
@@ -33,7 +33,7 @@ pyrsistent==0.17.3
 PySocks==1.7.1
 python-dateutil==2.8.1
 pytz==2020.4
-requests==2.25.0
+requests==2.25.1
 requests-cache==0.5.2
 six==1.15.0
 timeout-decorator==0.5.0
