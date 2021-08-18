@@ -5,7 +5,7 @@ with open("README.md", "r") as f:
 
 setup(
     name="pyoti",
-    version="0.1",
+    version="0.2",
     description="Python API for Threat Intelligence",
     long_description=long_description,
     long_description_content_type="text/markdown",
