@@ -26,6 +26,11 @@ def run(args):
                     if hash_resp['data']['attributes'].get('crowdsourced_yara_results'):
                         for yara_result in hash_resp['data']['attributes']['crowdsourced_yara_results']:
                             row += ([yara_result.get('description')])
+                elif hash_resp['data']['attributes'].get('known_distributors'):
+                    row += ([hash_resp['data']['attributes']['known_distributors'].get('distributors')])
+                csvwriter.writerow(row)
+            else:
+                row = ([hash, 'Not found!'])
                 csvwriter.writerow(row)
 
 
