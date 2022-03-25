@@ -6,6 +6,7 @@ import xmltodict
 from datetime import datetime, timedelta
 from shutil import which
 from tld import get_fld
+from typing import Dict
 
 from pyoti.exceptions import PyOTIError
 
@@ -18,37 +19,33 @@ HASH_TYPE = {
 }
 
 
-def get_hash_type(file_hash):
+def get_hash_type(file_hash: str) -> str:
     """Determines File Hash type"""
-
     for regex, algorithm in HASH_TYPE.items():
         if regex.match(file_hash):
 
             return algorithm
 
 
-def pypkg_exists(pypkg):
+def pypkg_exists(pypkg: str) -> None:
     """Checks if python package is installed"""
-
     if not which(pypkg):
         raise PyOTIError(f"{pypkg} not installed!")
 
 
-def split_eml_domain(email):
+def split_eml_domain(email: str) -> str:
     """Splits Domain from an Email Address"""
-
     domain = email.split("@")[1]
 
     return domain
 
 
-def split_url_domain(url):
+def split_url_domain(url: str) -> str:
     """Splits first level domain from an URL"""
-
     return get_fld(url)
 
 
-def time_check_since_epoch(epoch):
+def time_check_since_epoch(epoch: int) -> bool:
     seconds = epoch - int(time.time())
     hours = (seconds / 60) / 60
     if hours >= 1:
@@ -57,17 +54,16 @@ def time_check_since_epoch(epoch):
         return False
 
 
-def time_since_epoch(epoch):
+def time_since_epoch(epoch: int) -> str:
     return datetime.fromtimestamp(int(epoch)).strftime("%Y-%m-%d %H:%M:%S")
 
 
-def time_since_seconds(seconds):
+def time_since_seconds(seconds: int) -> str:
     return str(timedelta(seconds=seconds))
 
 
-def xml_to_json(xml_object):
+def xml_to_json(xml_object: str) -> Dict:
     """Convert XML to JSON"""
-
     xml_dict = xmltodict.parse(xml_object)
     dumps = json.dumps(xml_dict)
     json_data = json.loads(dumps)
