@@ -1,6 +1,7 @@
 import aiodns
 import asyncio
 import base64
+import sys
 
 import maltiverse
 import pycares
@@ -116,7 +117,7 @@ class DNSBlockList(Domain, IPAddress):
         """
         result_list = []
         for dbl in self.DBL:
-            answer = self._resolve(blocklist=dbl, type="domain")
+            answer = self._a_query(blocklist=dbl, type="domain")
             if answer:
                 results = {}
                 bl = dbl.split(".")[1]
@@ -186,7 +187,7 @@ class DNSBlockList(Domain, IPAddress):
         """
         result_list = []
         for rbl in self.RBL:
-            answer = self._resolve(blocklist=rbl, type="ip")
+            answer = self._a_query(blocklist=rbl, type="ip")
             if answer:
                 results = {}
                 bl = rbl.split(".")[1]
@@ -234,7 +235,9 @@ class DNSBlockList(Domain, IPAddress):
         return rev
 
     def _resolve(self, blocklist: str, type: str) -> List[pycares.ares_query_a_result]:
-        """Performs reverse DNS lookup
+        """DEPRECIATED - USE _a_query()
+
+        Performs DNS lookup
 
         :param blocklist: DNS blocklist URL
         :parm type: ip or domain
@@ -260,6 +263,32 @@ class DNSBlockList(Domain, IPAddress):
         except aiodns.error.DNSError:
             return
 
+    def _a_query(self, blocklist: str, type: str) -> List[pycares.ares_query_a_result]:
+        """DNS A record query
+
+         :param blocklist: DNS blocklist URL
+         :param type: ip or domain
+         :return: list of ares_query_a_result
+         """
+        try:
+            if sys.platform == "win32":
+                asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+            async def query_a(name):
+                resolver = aiodns.DNSResolver(nameservers=["208.67.222.222"])
+                return await resolver.query(name, "A")
+
+            if type == "ip":
+                host = f"{self._reverse_ip(ipaddr=self.ip)}.{blocklist}"
+            elif type == "domain":
+                host = f"{self.domain}.{blocklist}"
+
+            result = asyncio.run(query_a(name=host))
+
+            return result
+
+        except aiodns.error.DNSError:
+            return
 
 class HybridAnalysis(FileHash, URL):
     """HybridAnalysis Malware Analysis
