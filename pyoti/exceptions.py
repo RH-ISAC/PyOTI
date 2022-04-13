@@ -42,3 +42,5 @@ class URLhausHashError(PyOTIError):
 
 class VirusTotalError(PyOTIError):
     """Exception raised for VirusTotal errors."""
+
+    pass

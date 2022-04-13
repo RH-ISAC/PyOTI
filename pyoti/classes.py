@@ -1,11 +1,11 @@
 class API:
-    """Base API for PyOTI
+    """Base API for PyOTI"""
 
-    :param api_key: API key of the endpoint to connect to
-    :param api_url: URL of the API endpoint to connect to
-    """
-
-    def __init__(self, api_key=None, api_url=None):
+    def __init__(self, api_key: str = None, api_url: str = None):
+        """
+        :param api_key: API key for the endpoint to connect to
+        :param api_url: URL of the API endpoint to connect to
+        """
         self._api_key = api_key
         self._api_url = api_url
 
@@ -27,12 +27,14 @@ class API:
 
 
 class Domain(API):
-    """Domain API for PyOTI
+    """Domain API for PyOTI"""
 
-    :param domain: Domain to lookup/scan
-    """
-
-    def __init__(self, api_key=None, api_url=None, domain=None):
+    def __init__(self, api_key: str = None, api_url: str = None, domain: str = None):
+        """
+        :param api_key: API key for the endpoint to connect to
+        :param api_url: URL of the API endpoint to connect to
+        :param domain:  domain to check/scan
+        """
         self._domain = domain
         API.__init__(self, api_key, api_url)
 
@@ -46,12 +48,14 @@ class Domain(API):
 
 
 class FileHash(API):
-    """FileHash API for PyOTI
+    """FileHash API for PyOTI"""
 
-        :param file_hash: File hash to lookup/scan
+    def __init__(self, api_key: str = None, api_url: str = None, file_hash: str = None):
         """
-
-    def __init__(self, api_key=None, api_url=None, file_hash=None):
+        :param api_key: API key for the endpoint to connect to
+        :param api_url: URL of the API endpoint to connect to
+        :param file_hash: file hash to check/scan
+        """
         self._file_hash = file_hash
         API.__init__(self, api_key, api_url)
 
@@ -65,12 +69,14 @@ class FileHash(API):
 
 
 class IPAddress(API):
-    """IPAddress API for PyOTI
+    """IPAddress API for PyOTI"""
 
-        :param ip: IP address to lookup/scan
+    def __init__(self, api_key: str = None, api_url: str = None, ip: str = None):
         """
-
-    def __init__(self, api_key=None, api_url=None, ip=None):
+        :param api_key: API key for the endpoint to connect to
+        :param api_url: URL of the API endpoint to connect to
+        :param ip: IP address to check/scan
+        """
         self._ip = ip
         API.__init__(self, api_key, api_url)
 
@@ -84,12 +90,14 @@ class IPAddress(API):
 
 
 class URL(API):
-    """URL API for PyOTI
+    """URL API for PyOTI"""
 
-        :param url: URL to lookup/scan
+    def __init__(self, api_key: str = None, api_url: str = None, url: str = None):
         """
-
-    def __init__(self, api_key=None, api_url=None, url=None):
+        :param api_key: API key for the endpoint to connect to
+        :param api_url: URL of the API endpoint to connect to
+        :param url: URL to scan/check
+        """
         self._url = url
         API.__init__(self, api_key, api_url)
 
@@ -103,12 +111,14 @@ class URL(API):
 
 
 class EmailAddress(API):
-    """EmailAddress API for PyOTI
+    """EmailAddress API for PyOTI"""
 
-    :param email: Email address to lookup/scan
-    """
-
-    def __init__(self, api_key=None, api_url=None, email=None):
+    def __init__(self, api_key: str = None, api_url: str = None, email: str = None):
+        """
+        :param api_key: API key for the endpoint to connect to
+        :param api_url: URL of the API endpoint to connect to
+        :param email: URL to scan/check
+        """
         self._email = email
         API.__init__(self, api_key, api_url)
 

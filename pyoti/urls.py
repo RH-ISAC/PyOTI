@@ -7,6 +7,7 @@ import sys
 
 from html import unescape
 from urllib.parse import unquote, urlencode
+from typing import Dict, List
 
 from pyoti.classes import URL
 from pyoti.exceptions import GSBError, LinkPreviewError
@@ -20,21 +21,25 @@ class GoogleSafeBrowsing(URL):
     provides lists of URLs for web resources that contain malware or phishing
     content.
     """
-
     def __init__(
         self,
-        api_key,
-        api_url="https://safebrowsing.googleapis.com/v4/threatMatches:find",
+        api_key: str,
+        api_url: str = "https://safebrowsing.googleapis.com/v4/threatMatches:find",
     ):
         URL.__init__(self, api_key, api_url)
 
-    def _api_post(self, endpoint, platforms):
-        """POST request to API"""
+    def _api_post(self, endpoint: str, platforms: List[str]) -> Dict:
+        """POST request to API
 
+        :param endpoint: API URL
+        :param platforms: Default: ANY_PLATFORM. For all available options please see:
+        https://developers.google.com/safe-browsing/v4/reference/rest/v4/PlatformType
+        :return: dict of request response
+        """
         error_code = [400, 403, 429, 500, 503, 504]
 
         data = {
-            "client": {"clientId": "PyOTI", "clientVersion": "0.1"},
+            "client": {"clientId": "PyOTI", "clientVersion": "0.2"},
             "threatInfo": {
                 "threatTypes": [
                     "MALWARE",
@@ -70,13 +75,13 @@ class GoogleSafeBrowsing(URL):
         elif response.status_code in error_code:
             raise GSBError(response.json()["error"]["message"])
 
-    def check_url(self, platforms=["ANY_PLATFORM"]):
+    def check_url(self, platforms: List[str] = ["ANY_PLATFORM"]) -> Dict:
         """Checks URL reputation
 
         :param platforms: Default: ANY_PLATFORM. For all available options please see:
         https://developers.google.com/safe-browsing/v4/reference/rest/v4/PlatformType
+        :return: dict of request response
         """
-
         response = self._api_post(self.api_url, platforms)
 
         return response
@@ -87,13 +92,11 @@ class LinkPreview(URL):
 
     LinkPreview API provides basic website information from any given URL.
     """
-
-    def __init__(self, api_key, api_url="https://api.linkpreview.net"):
+    def __init__(self, api_key: str, api_url: str = "https://api.linkpreview.net"):
         URL.__init__(self, api_key, api_url)
 
-    def _api_get(self):
+    def _api_get(self) -> Dict:
         """GET request to API"""
-
         error_code = [400, 401, 403, 404, 423, 425, 426, 429]
 
         params = {"key": self.api_key, "q": self.url}
@@ -108,9 +111,11 @@ class LinkPreview(URL):
         elif response.status_code in error_code:
             raise LinkPreviewError(response.json()["description"])
 
-    def check_url(self):
-        """Checks URL reputation"""
+    def check_url(self) -> Dict:
+        """Checks URL reputation
 
+        :return: dict of request response
+        """
         response = self._api_get()
 
         return response
@@ -122,13 +127,17 @@ class Phishtank(URL):
     Phishtank is a collaborative clearing house for data and information about
     phishing on the internet.
     """
-
     def __init__(
         self,
-        api_key,
-        api_url="http://checkurl.phishtank.com/checkurl/",
-        username="PyOTI",
+        api_key: str,
+        api_url: str = "http://checkurl.phishtank.com/checkurl/",
+        username: str = "PyOTI",
     ):
+        """
+        :param api_key: Phishtank API key
+        :param api_url: Phishtank API URL
+        :param username: used as part of descriptive user agent ot identify the application
+        """
         self._username = username
         URL.__init__(self, api_key, api_url)
 
@@ -140,9 +149,11 @@ class Phishtank(URL):
     def username(self, value):
         self._username = value
 
-    def _api_post(self):
-        """POST request to API"""
+    def _api_post(self) -> Dict:
+        """POST request to API
 
+        :return: dict of request response
+        """
         new_check_bytes = self.url.encode("ascii")
         base64_bytes = base64.b64encode(new_check_bytes)
         base64_new_check = base64_bytes.decode("ascii")
@@ -153,9 +164,11 @@ class Phishtank(URL):
 
         return xml_to_json(response.text)
 
-    def check_url(self):
-        """Checks URL reputation"""
+    def check_url(self) -> Dict:
+        """Checks URL reputation
 
+        :return: dict of request response
+        """
         response = self._api_post()
 
         try:
@@ -169,7 +182,6 @@ class ProofpointURLDecoder(URL):
 
     Adopted from the script originally authored by Eric Van Cleve: https://help.proofpoint.com/@api/deki/files/177/URLDefenseDecode.py?revision=3
     """
-
     def __init__(self):
         self.ud_pattern = re.compile(r'https://urldefense(?:\.proofpoint)?\.com/(v[0-9])/')
         self.v1_pattern = re.compile(r'u=(?P<url>.+?)&k|amp;k=')

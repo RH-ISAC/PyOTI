@@ -1,5 +1,6 @@
 import json
 import requests
+from typing import Dict
 
 from pyoti.exceptions import SpamhausError
 from pyoti.classes import IPAddress
@@ -12,17 +13,21 @@ class AbuseIPDB(IPAddress):
     AbuseIPDB is a project dedicated to helping combat the spread of hackers, spammers,
     and abusive activity on the internet by providing a central blacklist to report and
     find IP addresses that have been associated with malicious activity.
-
-    :param api_key: AbuseIPDB API key
-    :param api_url: AbuseIPDB API URL
     """
-
     def __init__(
-        self, api_key, api_url="https://api.abuseipdb.com/api/v2/check"
+        self, api_key: str, api_url: str = "https://api.abuseipdb.com/api/v2/check"
     ):
+        """
+        :param api_key: AbuseIPDB API key
+        :param api_url: AbuseIPDB API URL
+        """
         IPAddress.__init__(self, api_key, api_url)
 
-    def _api_get(self, max_age):
+    def _api_get(self, max_age: int) -> Dict:
+        """
+        :param max_age: How far back in time (days) to fetch reports. (defaults to 30 days)
+        :return: dict of request response
+        """
         params = {"ipAddress": self.ip, "maxAgeInDays": max_age}
 
         headers = {"Accept": "application/json", "Key": self.api_key}
@@ -33,7 +38,7 @@ class AbuseIPDB(IPAddress):
 
         return response.json()
 
-    def check_ip(self, max_age=30):
+    def check_ip(self, max_age: int = 30) -> Dict:
         """
         Checks IP reputation
 
@@ -44,7 +49,6 @@ class AbuseIPDB(IPAddress):
         :param max_age: How far back in time (days) to fetch reports. (defaults to 30 days)
         :return: dict
         """
-
         response = self._api_get(max_age=max_age)
 
         return response
@@ -55,15 +59,19 @@ class SpamhausIntel(IPAddress):
 
     SpamhausIntel is an API with metadata relating to compromised IP Addresses.
     """
-
     def __init__(
-        self, api_key, api_url="https://api.spamhaus.org/api/v1/login"
+        self, api_key: str, api_url: str = "https://api.spamhaus.org/api/v1/login"
     ):
-        self._token = None
-        self._expires = None
+        """
+        :param api_key: SpamhausIntel API key
+        :param api_url: SPamhausIntel API URL
+        """
+        self._token: str = None
+        self._expires: int = None
         IPAddress.__init__(self, api_key, api_url)
 
     def _api_login(self):
+        """Authenticate to Spamhaus API to get bearer token"""
         data = {
             "username": self.api_key.split(":")[0],
             "password": self.api_key.split(":")[1],
@@ -78,7 +86,17 @@ class SpamhausIntel(IPAddress):
         elif response.status_code == 401:
             raise SpamhausError("Authentication Failed!")
 
-    def _api_get(self, limit, since, until, type, ip, mask):
+    def _api_get(self, limit: int, since: int, until: int, type: str, ip: str, mask: str) -> requests.Response:
+        """GET request to Spamhaus API
+
+        :param limit: Constrain the number of rows returned by the query
+        :param since: Results with a timestamp greater than or equal to 'since' (default 12 months if not passed)
+        :param until: Results with a timestamp less than or equal to 'until' (default current timestamp if not passed)
+        :param type: 'live' or 'history' return listings that are either active or inactive
+        :param ip: IP address to look for
+        :param mask: Optional netmask to use. (defaults to 32)
+        :return: requests response
+        """
         if not self._token:
             self._api_login()
         if not time_check_since_epoch(self._expires):
@@ -97,24 +115,22 @@ class SpamhausIntel(IPAddress):
 
         return response
 
-    def check_ip(self, limit=None, since=None, until=None, type="live", mask="32"):
-        """
-        :param limit: default None
-        :param since: default 12 months ago (unix timestamp)
-        :param until: default current time (unix timestamp)
-        :param type: default live (history - other option)
-        :param ip: IP Address to check reputation
-        :param mask: default 32
-        :return: dict
-        """
+    def check_ip(self, limit: int = None, since: int = None, until: int = None, type: str = "live", mask: str = "32") -> Dict:
+        """Checks IP reputation
 
+        :param limit: Constrain the number of rows returned by the query
+        :param since: Results with a timestamp greater than or equal to 'since' (default 12 months if not passed)
+        :param until: Results with a timestamp less than or equal to 'until' (default current timestamp if not passed)
+        :param type: 'live' or 'history' return listings that are either active or inactive
+        :param ip: IP address to look for
+        :param mask: Optional netmask to use. (defaults to 32)
+        :return: dict of request response
+        """
         get = self._api_get(
             limit=limit, since=since, until=until, type=type, ip=self.ip, mask=mask
         )
 
-        if get.status_code == 200:
+        if get.status_code == 200 or get.status_code == 404:
             return get.json()
-        elif get.status_code == 404:
-            return "Not found!"
         else:
             raise SpamhausError(get.text)
