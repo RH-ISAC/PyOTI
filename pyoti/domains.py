@@ -49,7 +49,7 @@ class CIRCLPDNS(Domain):
         """
         Domain.__init__(self, api_key=api_key)
 
-    def _api(self) -> pypdns.PyDNS:
+    def _api(self) -> pypdns.PyPDNS:
         """Instantiates PyPDNS API
 
         :return: CIRCL Passive DNS client
