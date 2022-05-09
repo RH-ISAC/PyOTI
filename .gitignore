@@ -17,3 +17,7 @@ venv/
 
 # Mac Files
 .DS_Store
+
+pyoti.egg-info/
+build/
+dist/
