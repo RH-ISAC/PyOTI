@@ -1,9 +1,9 @@
+import domaintools
 import json
 import pypdns
 import requests
 import subprocess
 
-from domaintools import API
 from typing import Dict, List
 
 from pyoti.classes import Domain
@@ -89,7 +89,7 @@ class IrisInvestigate(Domain):
         :return: Domaintools API client
         """
         credentials = self.api_key.split(":")
-        api = API(credentials[0], credentials[1])
+        api = domaintools.API(credentials[0], credentials[1])
 
         return api
 
