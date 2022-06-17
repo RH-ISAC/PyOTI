@@ -28,8 +28,6 @@ class GoogleSafeBrowsing(URL):
         https://developers.google.com/safe-browsing/v4/reference/rest/v4/PlatformType
         :return: dict of request response
         """
-        error_code = [400, 403, 429, 500, 503, 504]
-
         data = {
             "client": {"clientId": "PyOTI", "clientVersion": f"{__version__}"},
             "threatInfo": {
@@ -62,8 +60,6 @@ class GoogleSafeBrowsing(URL):
 
         return response
 
-
-
     def check_url(self, platforms: List[str] = ["ANY_PLATFORM"]) -> Dict:
         """Checks URL reputation
 
@@ -71,6 +67,8 @@ class GoogleSafeBrowsing(URL):
         https://developers.google.com/safe-browsing/v4/reference/rest/v4/PlatformType
         :return: dict of request response
         """
+        error_code = [400, 403, 429, 500, 503, 504]
+
         response = self._api_post(self.api_url, platforms)
 
         if response.status_code == 200:
