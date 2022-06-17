@@ -1,28 +1,39 @@
 # PyOTI - Python Open Threat Intelligence
 ***
 
-PyOTI is an API framework to easily query threat intel APIs to get fast, accurate and consistent enrichment data to provide added context to your indicators of compromise. Built like a modular framework to make it simple to use any of the available APIs without needing to be an experienced coder. If a service or tool you use isn’t already in PyOTI it is super simple to add a new enrichment module or you may open an issue for a feature request and we can work to get it added into the project. 
+PyOTI is an API framework to easily query threat intel APIs to get fast, accurate and consistent enrichment data to provide added context to your indicators of compromise. Built as a modular framework to make it easy to use any of the available APIs without needing to be an experienced coder. If a service or tool you use isn’t already in PyOTI it is simple to add a new enrichment module or you may open an issue for a feature request and we can work to get it added into the project. 
 
 Currently, PyOTI only performs queries to check if an indicator of compromise has already been scanned and/or analyzed OR seen by any of the APIs included in PyOTI. However, it is on the road map to add the ability to submit (or resubmit) an indicator of compromise to be scanned and/or analyzed by PyOTI’s APIs.
 
 
-|Indicator Types             | APIs                                                                           |
-|----------------------------|--------------------------------------------------------------------------------|
-|Domains                     | CheckDMARC, CIRCLPDNS, IrisInvestigate, WhoisXML                               |
-|Email Addresses             | DisposableEmails, EmailRepIO                                                   |
-|Hashes                      | MalwareHashRegistry                                                            |
-|IP Addresses                | AbuseIPDB, SpamhausIntel                                                       |
-|URLs                        | GoogleSafeBrowsing, LinkPreview, Phishtank, ProofpointURLDecoder               |
+|Indicator Types             | APIs                                                                                                                               |
+|----------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+|Domains                     | CheckDMARC, CIRCLPDNS, IrisInvestigate, WhoisXML                                                                                   |
+|Email Addresses             | DisposableEmails, EmailRepIO                                                                                                       |
+|Hashes                      | CIRCLHashLookup, MalwareHashRegistry                                                                                               |
+|IP Addresses                | AbuseIPDB, GreyNoise, SpamhausIntel                                                                                                |
+|URLs                        | GoogleSafeBrowsing, LinkPreview, Phishtank, ProofpointURLDecoder                                                                   |
 |Multis                      | CIRCLPSSL, DNSBlockList, HybridAnalysis, MaltiverseIOC, MISP, Onyphe, OTX, Pulsedive, URLhaus, URLscan, VirusTotalV2, VirusTotalV3 |
 
 ***
-## Installing/Updating 
+## Installing via pip
+It is advised to use a virtual environment.
+```python
+python3 -m pip install pyoti
+```
+
+If you want to also use the Jupyter Notebook please install additional dependencies.
+```python
+python3 -m pip install pyoti[jupyter_notebook]
+```
+***
+## Installing/Updating from source
 Windows instructions can be found in the docs directory [here](https://github.com/RH-ISAC/PyOTI/blob/main/docs/windows/README.md).
  
 Linux instructions can be found in the docs directory [here](https://github.com/RH-ISAC/PyOTI/blob/main/docs/linux/README.md).
 ***
 ## Tutorial
-For a quick tutorial on the ease and benefit of using PyOTI you can view the Phishing URL Triage jupyter notebook [here](https://github.com/RH-ISAC/PyOTI/blob/main/docs/tutorials/phishing_triage_urls.ipynb).
+For a quick tutorial on the ease and benefit of using PyOTI you can view the Phishing URL Triage Jupyter Notebook [here](https://github.com/RH-ISAC/PyOTI/blob/main/docs/tutorials/phishing_triage_urls.ipynb).
 ***
 ## License
 Copyright © 2021-2022, RH-ISAC 
