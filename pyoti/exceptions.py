@@ -6,41 +6,46 @@ class PyOTIError(Exception):
         self.message = message
 
 
-class GSBError(PyOTIError):
-    """Exception raised for Google Safe Browsing HTTP Status Errors"""
+class CIRCLPDNSError(PyOTIError):
+    """Exception raised for CIRCLPDNS errors."""
+    pass
 
+
+class GSBError(PyOTIError):
+    """Exception raised for Google Safe Browsing errors."""
     pass
 
 
 class LinkPreviewError(PyOTIError):
-    """Exception raised for LinkPreview API."""
-
+    """Exception raised for LinkPreview errors."""
     pass
 
 
 class MaltiverseIOCError(PyOTIError):
     """Exception raised for MaltiverseIOC errors."""
-
     pass
 
 
-class OTXError(PyOTIError):
-    """Exception raised for AlienVault OTX errors."""
+class MalwareHashRegistryError(PyOTIError):
+    """Exception raised for MalwareHashRegistry errors."""
+    pass
 
 
 class SpamhausError(PyOTIError):
-    """Exception raised for any special codes returned that indicates an error in query."""
-
+    """Exception raised for Spamhaus errors."""
     pass
 
 
-class URLhausHashError(PyOTIError):
-    """Exception raised for URLhaus errors."""
+class SpamhausIntelError(PyOTIError):
+    """Exception raised for SpamhausIntel errors."""
+    pass
 
+
+class URLhausError(PyOTIError):
+    """Exception raised for URLhaus errors."""
     pass
 
 
 class VirusTotalError(PyOTIError):
     """Exception raised for VirusTotal errors."""
-
     pass
