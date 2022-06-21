@@ -5,7 +5,6 @@ You may also need to set execution policy to unrestricted in order to create/act
 
 Virtualenv (recommended):
 ```powershell
-
 # clone PyOTI repository and copy sample keys file
 git clone https://github.com/RH-ISAC/PyOTI "$env:USERPROFILE\PyOTI"
 Set-Location -Path "$env:USERPROFILE\PyOTI"
@@ -20,6 +19,14 @@ notepad "$env:USERPROFILE\PyOTI\examples\keys.py"
 # install PyOTI library
 py -m pip install .
 ```
+
+**Important Note:** 
+
+If you are using SSL inspection/MITM proxy and having issues running PyOTI, try appending your root certificate to the following file:
+```powershell
+$env:USERPROFILE\PyOTI\venv\Lib\site-packages\certifi\cacert.pem
+```
+
 No virtualenv:
 ```powershell
 # clone PyOTI repository and copy sample keys file
@@ -32,6 +39,7 @@ notepad "$env:USERPROFILE\PyOTI\examples\keys.py"
 py -m pip install .
 ```
 ##
+
 ## Updating for Windows
 Virtualenv:
 ```powershell
