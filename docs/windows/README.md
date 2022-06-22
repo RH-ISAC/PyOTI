@@ -5,24 +5,28 @@ You may also need to set execution policy to unrestricted in order to create/act
 
 Virtualenv (recommended):
 ```powershell
-# install/setup virtual environment
-Set-ExecutionPolicy Unrestricted -Force
-py -m pip install virtualenv
-New-Item -Path "$env:USERPROFILE" -Name "python-venv" -ItemType "directory"
-Set-Location -Path "$env:USERPROFILE\python-venv"
-py -m venv pyoti
-.\pyoti\Scripts\Activate.ps1
-
 # clone PyOTI repository and copy sample keys file
 git clone https://github.com/RH-ISAC/PyOTI "$env:USERPROFILE\PyOTI"
 Set-Location -Path "$env:USERPROFILE\PyOTI"
 Copy-Item "$env:USERPROFILE\PyOTI\examples\keys.py.sample" -Destination "$env:USERPROFILE\PyOTI\examples\keys.py"
+# install/setup virtual environment
+Set-ExecutionPolicy Unrestricted -Force
+py -m pip install virtualenv
+py -m venv venv
+.\venv\Scripts\Activate.ps1
 # make sure to fill in your API secrets!
 notepad "$env:USERPROFILE\PyOTI\examples\keys.py"
-# install requirements and PyOTI library
-py -m pip install -r requirements.txt
+# install PyOTI library
 py -m pip install .
 ```
+
+**Important Note:** 
+
+If you are using SSL inspection/MITM proxy and having issues running PyOTI, try appending your root certificate to the following file:
+```powershell
+$env:USERPROFILE\PyOTI\venv\Lib\site-packages\certifi\cacert.pem
+```
+
 No virtualenv:
 ```powershell
 # clone PyOTI repository and copy sample keys file
@@ -31,26 +35,24 @@ Set-Location -Path "$env:USERPROFILE\PyOTI"
 Copy-Item "$env:USERPROFILE\PyOTI\examples\keys.py.sample" -Destination "$env:USERPROFILE\PyOTI\examples\keys.py"
 # make sure to fill in your API secrets!
 notepad "$env:USERPROFILE\PyOTI\examples\keys.py"
-# install requirements and PyOTI library
-py -m pip install -r requirements.txt
+# install PyOTI library
 py -m pip install .
 ```
 ##
+
 ## Updating for Windows
 Virtualenv:
 ```powershell
 # activate virtual environment
 Set-ExecutionPolicy Unrestricted -Force
-Set-Location -Path "$env:USERPROFILE\python-venv"
-.\pyoti\Scripts\Activate.ps1
-# pull PyOTI repository
 Set-Location -Path "$env:USERPROFILE\PyOTI"
+.\venv\Scripts\Activate.ps1
+# pull PyOTI repository and update keys
 git pull
 powershell .\update_keys.ps1 
 # make sure to fill in your updated API secrets!
 notepad "$env:USERPROFILE\PyOTI\examples\keys.py"
-# make sure requirements and PyOTI library are updated
-py -m pip install -r requirements.txt
+# make sure PyOTI library is updated
 py -m pip install .
 ```
 No virtualenv:
@@ -62,7 +64,6 @@ git pull
 powershell .\update_keys.ps1 
 # make sure to fill in your updated API secrets!
 notepad "$env:USERPROFILE\PyOTI\examples\keys.py"
-# make sure requirements and PyOTI library are updated
-py -m pip install -r requirements.txt
+# make sure PyOTI library is updated
 py -m pip install .
 ```
