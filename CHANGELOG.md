@@ -1,9 +1,17 @@
 Changelog
 =========
 
+v0.3.1 (2022-06-22)
+-------------------
+
+Changes
+~~~~~~~
+- Added package exclusions in setup.cfg
+- Bumped PyOTI version
+~~~~~~~
 
 v0.3.0 (2022-06-17)
--------------
+-------------------
 
 Changes
 ~~~~~~~
