@@ -10,3 +10,4 @@ from .threatfox import ThreatFox
 from .urlhaus import URLhaus
 from .urlscan import URLscan
 from .virustotal import VirusTotalV2, VirusTotalV3
+from .xforce import XForceExchange
