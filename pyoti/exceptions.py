@@ -31,11 +31,6 @@ class MalwareHashRegistryError(PyOTIError):
     pass
 
 
-class SpamhausError(PyOTIError):
-    """Exception raised for Spamhaus errors."""
-    pass
-
-
 class SpamhausIntelError(PyOTIError):
     """Exception raised for SpamhausIntel errors."""
     pass
