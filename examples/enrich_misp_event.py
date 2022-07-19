@@ -360,7 +360,9 @@ def run_enrichment(attributes: Union[List[MISPAttribute], List[MISPObjectAttribu
 def main():
     parser = ArgumentParser(
         prog="Automated MISP Event Enrichment",
-        description="This script will use PyOTI modules to run automated enrichment on all attributes attached to a MISP Event and/or attributes attached to MISP Object(s) within a MISP Event and add appropriate PyOTI MISP Taxonomy tags."
+        description="This script will use PyOTI modules to run automated enrichment on all attributes attached to a "
+                    "MISP Event and/or attributes attached to MISP Object(s) within a MISP Event and add appropriate "
+                    "PyOTI MISP Taxonomy tags. "
     )
     parser.add_argument(
         "-u",
