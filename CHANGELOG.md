@@ -1,6 +1,24 @@
 Changelog
 =========
 
+v0.3.2 (2022-07-19)
+-------------------
+
+Changes
+~~~~~~~
+- Bumped PyOTI version
+- Removed SpamhausError exception
+- Refactored DNSBlocklist module and added additional blocklist return codes
+~~~~~~~
+
+New
+~~~
+- Added ThreatFox integration
+- Added MalwareBazaar integration
+- Added XforceExchange integration
+- Added example script to enrich a MISP event using PyOTI
+~~~
+
 v0.3.1 (2022-06-22)
 -------------------
 
