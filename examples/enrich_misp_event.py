@@ -9,7 +9,7 @@ from pyoti.ips import AbuseIPDB, GreyNoise
 from pyoti.multis import DNSBlockList, VirusTotalV3
 from pyoti.urls import GoogleSafeBrowsing
 
-from keys import abuseipdb, domaintools, googlesafebrowsing, greynoise, misp_pre, sublime, virustotal
+from keys import abuseipdb, domaintools, googlesafebrowsing, greynoise, misp, sublime, virustotal
 
 
 def enrich_hashes(file_hash: str) -> Dict:
@@ -402,9 +402,9 @@ def main():
     )
     args = parser.parse_args()
 
-    misp = ExpandedPyMISP(url=args.url, key=misp_pre, ssl=args.ssl)
+    m = ExpandedPyMISP(url=args.url, key=misp, ssl=args.ssl)
 
-    event = misp.get_event(args.event_id, pythonify=True)
+    event = m.get_event(args.event_id, pythonify=True)
 
     attrs = event.attributes
 
