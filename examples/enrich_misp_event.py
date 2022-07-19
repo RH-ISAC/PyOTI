@@ -424,11 +424,11 @@ def main():
             print(f"[*] Found {len(object_attr)} attributes attached to MISP Object. Running enrichment...")
             run_enrichment(attributes=object_attr)
 
-    misp.update_event(event)
+    m.update_event(event)
     print(f"[!] Enrichment complete! Updated MISP Event ID: {event.id}!")
 
     if args.publish:
-        misp.publish(args.event_id)
+        m.publish(args.event_id)
         print(f"[!] Published MISP Event ID: {event.id}!")
 
 
