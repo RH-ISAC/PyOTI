@@ -64,11 +64,11 @@ class CheckDMARC(Domain):
         """Check if domain is spoofable"""
         if not results.get("dmarc") or not results.get("spf"):
             results['spoofable'] = True
-        elif not re.search(r"([-+?~]?(all))$", results.get("spf").get("txt")).group():
+        elif not re.search(r"([-~]+(all))$", results.get("spf").get("txt")):
             results['spoofable'] = True
-        elif "p=none" in re.search(r"\s*p=([^;]*)\s*", results.get("dmarc").get("txt")).group():
+        elif re.search(r"\s*p=none;", results.get("dmarc").get("txt")):
             results['spoofable'] = True
-        elif "p=" not in re.search(r"\s*p=([^;]*)\s*", results.get("dmarc").get("txt")).group():
+        elif not re.search(r"\s*p=([^;]*)\s*", results.get("dmarc").get("txt")):
             results['spoofable'] = True
 
         return results
