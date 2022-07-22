@@ -1,6 +1,14 @@
 Changelog
 =========
 
+v0.3.2.1 (2022-07-22) [bugfix]
+----------------------------
+
+Changes
+~~~~~~~
+- Refactored regex used in CheckDMARC ._spoofable_check() [AttributeError: 'NoneType' object has no attribute 'group']
+~~~~~~~
+
 v0.3.2 (2022-07-19)
 -------------------
 
