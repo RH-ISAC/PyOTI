@@ -11,11 +11,6 @@ class CIRCLPDNSError(PyOTIError):
     pass
 
 
-class GSBError(PyOTIError):
-    """Exception raised for Google Safe Browsing errors."""
-    pass
-
-
 class LinkPreviewError(PyOTIError):
     """Exception raised for LinkPreview errors."""
     pass
