@@ -1,6 +1,16 @@
 Changelog
 =========
 
+v0.3.3 (2022-08-01)
+-------------------
+
+Changes
+~~~~~~~
+- Bumped PyOTI version
+- Added handling in DNSBlocklist for surbl when domain appears on multiple lists
+- Removed GoogleSafeBrowsing exception, return the error instead of raising an exception
+~~~~~~~
+
 v0.3.2.1 (2022-07-22) [bugfix]
 ----------------------------
 

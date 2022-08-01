@@ -3,7 +3,6 @@ from typing import Dict, List
 
 from pyoti import __version__
 from pyoti.classes import URL
-from pyoti.exceptions import GSBError
 
 
 class GoogleSafeBrowsing(URL):
@@ -79,4 +78,5 @@ class GoogleSafeBrowsing(URL):
                 return response.json()
 
         elif response.status_code in error_code:
-            raise GSBError(response.json()["error"]["message"])
+            r = {'error': response.json()["error"]["message"]}
+            return r
