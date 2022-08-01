@@ -117,7 +117,10 @@ class DNSBlockList(Domain, IPAddress):
                 ]:
                     results["error"] = f"{bl}:{zone}"
                 else:
-                    results["blocklist"] = f"{bl}-{zone}"
+                    if isinstance(zone, str):
+                        results["blocklist"] = f"{bl}-{zone}"
+                    elif isinstance(zone, list):
+                        results["blocklist"] = [f"{bl}-{z}" for z in zone]
                 result_list.append(results)
         return result_list
 
