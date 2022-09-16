@@ -29,12 +29,15 @@ def run(args):
                     iris.domain = '.'.join(dmnsplt[-2:])
                 else:
                     iris.domain = dmn
-            domain_rep = iris.check_domain()
+
             try:
+                domain_rep = iris.check_domain()
                 risk_score = domain_rep[0]["domain_risk"]["risk_score"]
             except IndexError:
                 risk_score = "N/A"
             except KeyError:
+                risk_score = "N/A"
+            except AttributeError:
                 risk_score = "N/A"
 
             csvwriter.writerow([dmn, risk_score])
