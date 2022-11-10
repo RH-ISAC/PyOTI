@@ -1,5 +1,14 @@
 Changelog
 =========
+v0.3.3.1 (2022-11-10)
+---------------------
+
+Changes
+~~~~~~~
+- Bumped PyOTI version
+- Removed semicolon from regex search for DMARC policy in CheckDMARC
+~~~~~~~
+
 
 v0.3.3 (2022-08-01)
 -------------------

@@ -66,7 +66,7 @@ class CheckDMARC(Domain):
             results['spoofable'] = True
         elif not re.search(r"([-~]+(all))$", results.get("spf").get("txt")):
             results['spoofable'] = True
-        elif re.search(r"\s*p=none;", results.get("dmarc").get("txt")):
+        elif re.search(r"\s*p=none", results.get("dmarc").get("txt")):
             results['spoofable'] = True
         elif not re.search(r"\s*p=([^;]*)\s*", results.get("dmarc").get("txt")):
             results['spoofable'] = True
