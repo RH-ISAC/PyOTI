@@ -1,5 +1,15 @@
 Changelog
 =========
+v0.3.3.2 (2023-02-22)
+---------------------
+
+Changes
+~~~~~~~
+- Bumped PyOTI version
+- Added conditional check in CheckDMARC _get_spf() method 
+~~~~~~~
+
+
 v0.3.3.1 (2022-11-10)
 ---------------------
 
