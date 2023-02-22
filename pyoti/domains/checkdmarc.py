@@ -38,9 +38,10 @@ class CheckDMARC(Domain):
 
         spf_json = {}
         for r in result:
-            if re.search(r"^v=spf1", r.text):
-                spf_json["txt"] = r.text
-                spf_json["ttl"] = r.ttl
+            if isinstance(r.text, str):
+                if re.search(r"^v=spf1", r.text):
+                    spf_json["txt"] = r.text
+                    spf_json["ttl"] = r.ttl
 
         return spf_json
 
