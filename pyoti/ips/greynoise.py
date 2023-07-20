@@ -1,5 +1,5 @@
 import requests
-from typing import Dict
+from typing import Dict, List
 
 from pyoti import __version__
 from pyoti.classes import IPAddress
@@ -17,42 +17,7 @@ class GreyNoise(IPAddress):
         :param api_url: GreyNoise base API URL
         """
         IPAddress.__init__(self, api_key, api_url)
-
-    def _api_get(self, url: str) -> requests.models.Response:
-        """GET request to API"""
-        headers = {
-            "Accept": "application/json",
-            "key": self.api_key,
-            "User-Agent": f"PyOTI/ {__version__}"
-        }
-
-        response = requests.request("GET", url=url, headers=headers)
-
-        return response
-
-    def check_ip_community(self) -> Dict:
-        """Check IP reputation
-
-        The Community API provides community users with a free tool to query IPs in the GreyNoise dataset and retrieve
-        a subset of the full IP context data returned by the IP Lookup API.
-        """
-        url = f"{self.api_url}/v3/community/{self.ip}"
-        response = self._api_get(url=url)
-
-        return response.json()
-
-    def check_ip_quick(self) -> Dict:
-        """ Check IP reputation
-
-        Requires premium API key.
-
-        Check whether a given IP address is “Internet background noise”, or has been observed scanning or attacking
-        devices across the Internet.
-        """
-        url = f"{self.api_url}/v2/noise/quick/{self.ip}"
-        response = self._api_get(url=url)
-
-        codes = {
+        self.codes = {
             "0x00": "IP hasn't been observed scanning the internet.",
             "0x01": "IP has been observed by GreyNoise sensor network.",
             "0x02": "IP has been observed scanning GreyNoise sensor network, but hasn't completed a full connection, "
@@ -68,14 +33,94 @@ class GreyNoise(IPAddress):
             "0x10": "IP has been observed by GreyNoise sensor network and was found in RIOT."
         }
 
+    def _api_get(self, url: str) -> requests.models.Response:
+        """GET request to API"""
+        headers = {
+            "Accept": "application/json",
+            "key": self.api_key,
+            "User-Agent": f"PyOTI/ {__version__}"
+        }
+
+        response = requests.request("GET", url=url, headers=headers)
+
+        return response
+
+    def _api_post(self, url: str, ip_list: List[str]) -> requests.models.Response:
+        """POST request to API"""
+        payload = {"ips": ip_list}
+
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+            "key": self.api_key,
+            "User-Agent": f"PyOTI {__version__}"
+        }
+
+        response = requests.request("POST", url=url, json=payload, headers=headers)
+
+        return response
+
+    def check_ip_community(self) -> Dict:
+        """Check IP reputation community
+
+        The Community API provides community users with a free tool to query IPs in the GreyNoise dataset and retrieve
+        a subset of the full IP context data returned by the IP Lookup API.
+        """
+        url = f"{self.api_url}/v3/community/{self.ip}"
+        response = self._api_get(url=url)
+
+        return response.json()
+
+    def check_ip_quick(self) -> Dict:
+        """ Check IP reputation quick
+
+        Requires premium API key.
+
+        Check whether a given IP address is “Internet background noise”, or has been observed scanning or attacking
+        devices across the Internet.
+        """
+        url = f"{self.api_url}/v2/noise/quick/{self.ip}"
+        response = self._api_get(url=url)
+
         r = response.json()
         r_code = r.get("code")
-        r['code_message'] = codes.get(r_code)
+        r['code_message'] = self.codes.get(r_code)
 
         return r
 
+    def bulk_check_ips_quick(self, ip_list: List[str]) -> List[Dict]:
+        """Bulk check IP reputation quick
+
+        Requires premium API key.
+
+        Check whether a set of IP addresses are "Internet background noise", or have been observed scanning or
+        attacking devices across the Internet.
+
+        :param ip_list: List of IPs to check reputation
+        """
+        url = f"{self.api_url}/v2/noise/multi/quick"
+        if len(ip_list) <= 1000:
+            response = self._api_post(url=url, ip_list=ip_list)
+            r = response.json()
+            for result in r:
+                result['code_message'] = self.codes.get(result['code'])
+            return r
+        else:
+            chunk_size = 1000
+            chunks = [ip_list[i:i + chunk_size] for i in range(0, len(ip_list), chunk_size)]
+            results = []
+
+            for chunk in chunks:
+                response = self._api_post(url=url, ip_list=chunk)
+                r = response.json()
+                for result in r:
+                    result['code_message'] = self.codes.get(result['code'])
+                [results.append(result) for result in r]
+
+                return results
+
     def check_ip_context(self) -> Dict:
-        """ Check IP reputation
+        """ Check IP reputation context
 
         Requires premium API key.
 
@@ -87,8 +132,36 @@ class GreyNoise(IPAddress):
 
         return response.json()
 
+    def bulk_check_ip_context(self, ip_list: List[str]) -> List[Dict]:
+        """ Bulk check IP reputation context
+
+        Requires premium API key.
+
+        Get more information about a set of IP addresses. Returns time ranges, IP metadata (network owner, ASN,
+        reverse DNS pointer, country), associated actors, activity tags, and raw port scan and web request information.
+
+        :param ip_list: List of IPs to check reputation
+        """
+        url = f"{self.api_url}/v2/noise/multi/context"
+
+        if len(ip_list) <= 1000:
+            response = self._api_post(url=url, ip_list=ip_list)
+
+            return response.json().get('data')
+        else:
+            chunk_size = 1000
+            chunks = [ip_list[i:i + chunk_size] for i in range(0, len(ip_list), chunk_size)]
+            results = []
+
+            for chunk in chunks:
+                response = self.api_post(url=url, ip_list=chunk)
+                r = response.json().get('data')
+                [results.append(result) for result in r]
+
+                return results
+
     def check_ip_riot(self) -> Dict:
-        """ Check IP reputation
+        """ Check IP reputation RIOT
 
         Requires premium API key.
 
