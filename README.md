@@ -6,14 +6,14 @@ PyOTI is an API framework to easily query threat intel APIs to get fast, accurat
 Currently, PyOTI only performs queries to check if an indicator of compromise has already been scanned and/or analyzed OR seen by any of the APIs included in PyOTI. However, it is on the road map to add the ability to submit (or resubmit) an indicator of compromise to be scanned and/or analyzed by PyOTI’s APIs.
 
 
-| Indicator Types | APIs                                                                                                                                                          |
-|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Domains         | CheckDMARC, CIRCLPDNS, IrisInvestigate, WhoisXML                                                                                                              |
-| Email Addresses | DisposableEmails, EmailRepIO                                                                                                                                  |
-| Hashes          | CIRCLHashLookup, MalwareBazaar, MalwareHashRegistry                                                                                                           |
-| IP Addresses    | AbuseIPDB, GreyNoise, SpamhausIntel                                                                                                                           |
-| URLs            | GoogleSafeBrowsing, LinkPreview, Phishtank, ProofpointURLDecoder                                                                                              |
-| Multis          | CIRCLPSSL, DNSBlockList, HybridAnalysis, MaltiverseIOC, MISP, Onyphe, OTX, Pulsedive, ThreatFox, URLhaus, URLscan, VirusTotalV2, VirusTotalV3, XForceExchange |
+| Indicator Types | APIs                                                                                                                                                                      |
+|-----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Domains         | CheckDMARC, CIRCLPDNS, IrisInvestigate, WhoisXML                                                                                                                          |
+| Email Addresses | DisposableEmails, EmailRepIO                                                                                                                                              |
+| Hashes          | CIRCLHashLookup, MalwareBazaar, MalwareHashRegistry                                                                                                                       |
+| IP Addresses    | AbuseIPDB, GreyNoise, SpamhausIntel                                                                                                                                       |
+| URLs            | GoogleSafeBrowsing, LinkPreview, Phishtank, ProofpointURLDecoder                                                                                                          |
+| Multis          | BinaryEdge, CIRCLPSSL, DNSBlockList, HybridAnalysis, MaltiverseIOC, MISP, Onyphe, OTX, Pulsedive, ThreatFox, URLhaus, URLscan, VirusTotalV2, VirusTotalV3, XForceExchange |
 
 ***
 ## Installing via pip
@@ -36,7 +36,7 @@ Linux instructions can be found in the docs directory [here](https://github.com/
 For a quick tutorial on the ease and benefit of using PyOTI you can view the Phishing URL Triage Jupyter Notebook [here](https://github.com/RH-ISAC/PyOTI/blob/main/docs/tutorials/phishing_triage_urls.ipynb).
 ***
 ## License
-Copyright © 2021-2022, RH-ISAC 
+Copyright © 2021-2023, RH-ISAC 
 
 This work is free software. You may redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or
 at your option, any later version.

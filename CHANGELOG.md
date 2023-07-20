@@ -1,5 +1,20 @@
 Changelog
 =========
+v0.4 (2023-07-20)
+-----------------
+
+Changes
+~~~~~~~
+- Bumped PyOTI version
+- Updated README.md
+- Added bulk hash check CIRCLHashLookup method and exception
+- Added bulk hash check IrisInvestigate method
+- Added bulk quick and bulk context check GreyNoise methods
+- Added bulk url check GoogleSafeBrowsing method
+- Added BinaryEdge multis class
+~~~~~~~
+
+
 v0.3.3.2 (2023-02-22)
 ---------------------
 

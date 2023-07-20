@@ -1,3 +1,4 @@
+from .binaryedge import BinaryEdge
 from .circlpssl import CIRCLPSSL
 from .dnsblocklist import DNSBlockList
 from .hybridanalysis import HybridAnalysis
