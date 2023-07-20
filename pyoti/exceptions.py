@@ -11,6 +11,11 @@ class CIRCLPDNSError(PyOTIError):
     pass
 
 
+class CIRCLHashLookupError(PyOTIError):
+    """Exception raised for CIRCLHashLookup errors."""
+    pass
+
+
 class LinkPreviewError(PyOTIError):
     """Exception raised for LinkPreview errors."""
     pass
