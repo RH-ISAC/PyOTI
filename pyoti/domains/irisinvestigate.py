@@ -21,7 +21,7 @@ class IrisInvestigate(Domain):
         """
         Domain.__init__(self, api_key, api_url)
 
-    def _api_post(self) -> requests.models.Response:
+    def _api_post(self, **kwargs) -> requests.models.Response:
         """POST request to Iris Investigate API
 
         :return: dict of request response
@@ -37,8 +37,13 @@ class IrisInvestigate(Domain):
             'api_username': creds[0],
             'signature': signature,
             'timestamp': timestamp,
-            'domain': self.domain
         }
+
+        if kwargs.get('domain_list'):
+            params['domain'] = ','.join(kwargs.get('domain_list'))
+
+        else:
+            params['domain'] = self.domain
 
         response = requests.request("POST", url=self.api_url, headers=headers, params=params)
 
@@ -53,3 +58,26 @@ class IrisInvestigate(Domain):
         r = response.json().get('response')
 
         return r.get('results')
+
+    def bulk_check_domain(self, domain_list: List[str]) -> List[Dict]:
+        """Bulk check domain reputation
+
+        :param domain_list: List of domains to check reputation
+        :return: list of dicts containing results from request response
+        """
+        if len(domain_list) <= 100:
+            response = self._api_post(domain_list=domain_list)
+            r = response.json().get('response')
+
+            return r.get('results')
+        else:
+            chunk_size = 100
+            chunks = [domain_list[i:i + chunk_size] for i in range(0, len(domain_list), chunk_size)]
+            results = []
+
+            for chunk in chunks:
+                response = self._api_post(domain_list=chunk)
+                r = response.json().get('response')
+                [results.append(result) for result in r.get('results')]
+
+                return results
