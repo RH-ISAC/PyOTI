@@ -1,4 +1,5 @@
 import base64
+import os
 import requests
 import time
 from typing import Dict, Optional
@@ -147,6 +148,33 @@ class VirusTotalV3(Domain, FileHash, IPAddress, URL):
 
         return response
 
+    def _api_post(self, url: str, file_path: str, zip_pw: str = None) -> requests.models.Response:
+        """POST request to API
+        :param url: VirusTotal API endpoint URL
+        :param file_path: Path for file to submit
+        :param zip_pw: Password if ZIP file submission
+        """
+        headers = {
+            "x-apikey": self.api_key,
+            "User-Agent": f"PyOTI {__version__}",
+            "Accept": "application/json",
+        }
+
+        files = {
+            "file": (
+                os.path.basename(file_path),
+                open(os.path.abspath(file_path), "rb")
+            )
+        }
+
+        if zip_pw is not None:
+            payload = {"password": zip_pw}
+            response = requests.request("POST", url=url, files=files, headers=headers, data=payload)
+        else:
+            response = requests.request("POST", url=url, files=files, headers=headers)
+
+        return response
+
     def check_domain(self) -> Dict:
         """Retrieve information about an Internet domain
 
@@ -187,3 +215,25 @@ class VirusTotalV3(Domain, FileHash, IPAddress, URL):
         response = self._api_get(url=url)
 
         return response.json()
+
+    def upload_file(self, file_path: str, zip_pw: str = None) -> Dict:
+        """Upload and analyse a file
+
+        :param file_path: Path for file to submit
+        :param zip_pw: Password if ZIP file submission
+        """
+        # TODO: file size checks
+        #  - this endpoint allows <= 32mb
+        #  - /files/upload_url allows 32mb >= FILE <= 650mb
+        url = f"{self.api_url}/files"
+        response = self._api_post(url=url, file_path=file_path, zip_pw=zip_pw)
+        analysis_id = response.json()["data"]["id"]
+        analysis_url = f"{self.api_url}/analyses/{analysis_id}"
+        print("[+] File queued for analysis!")
+        while self._api_get(url=analysis_url).json()["data"]["attributes"]["status"] == "queued":
+            time.sleep(5)
+        analysis_resp = self._api_get(url=f"{self.api_url}/analyses/{analysis_id}")
+        link = f"https://virustotal.com/gui/file/{analysis_resp.json()['meta']['file_info']['sha256']}"
+        print(f"[!] File analysis completed! VT Sample Link: {link}")
+
+        return analysis_resp.json()
