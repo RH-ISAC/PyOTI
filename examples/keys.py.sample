@@ -1,4 +1,5 @@
 abuseipdb = ''
+binaryedge = ''
 circlpassive = '{USER}:{SECRET}'
 domaintools = '{USER}:{SECRET}'
 googlesafebrowsing = ''
