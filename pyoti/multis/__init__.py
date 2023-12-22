@@ -7,9 +7,10 @@ from .misp import MISP
 from .onyphe import Onyphe
 from .otx import OTX
 from .pulsedive import Pulsedive
+from .stairwell import Stairwell
 from .threatfox import ThreatFox
 from .triage import Triage
 from .urlhaus import URLhaus
 from .urlscan import URLscan
-from .virustotal import VirusTotalV2, VirusTotalV3
+from .virustotal import VirusTotalV3
 from .xforce import XForceExchange

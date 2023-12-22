@@ -2,118 +2,10 @@ import base64
 import os
 import requests
 import time
-from typing import Dict, Optional
+from typing import Dict
 
 from pyoti import __version__
 from pyoti.classes import Domain, FileHash, IPAddress, URL
-from pyoti.exceptions import VirusTotalError
-
-
-class VirusTotalV2(Domain, FileHash, IPAddress, URL):
-    """VirusTotal IOC Analyzer
-
-    VirusTotal analyzes files and URLs enabling detection of malicious content
-    using antivirus engines and website scanners. (VT API v2)
-    """
-    def __init__(
-        self, api_key: str, api_url: str = "https://www.virustotal.com/vtapi/v2"
-    ):
-        """
-        :param api_key: VirusTotal API key
-        :param api_url: VirusTotal v2 base API URL
-        """
-        Domain.__init__(self, api_key=api_key, api_url=api_url)
-        FileHash.__init__(self, api_key=api_key, api_url=api_url)
-        IPAddress.__init__(self, api_key=api_key, api_url=api_url)
-        URL.__init__(self, api_key=api_key, api_url=api_url)
-
-    def _api_get(self, endpoint: str, ioctype: str, iocvalue: str, allinfo: Optional[bool], scan: Optional[bool] = None) -> requests.models.Response:
-        """GET request to API
-
-        :param endpoint: VirusTotal v2 API endpoint
-        :param ioctype: domain, resource, or ip
-        :param iocvalue: domain, filehash, ip address, URL
-        :param allinfo: more details with VT premium
-        :param scan: submit URL for analysis if no report is found
-        """
-        headers = {"User-Agent": f"PyOTI {__version__}"}
-
-        params = {"apikey": self.api_key, ioctype: iocvalue}
-        if allinfo:
-            params["allinfo"] = True
-        if scan:
-            params["scan"] = 1
-
-        response = requests.request("GET", url=endpoint, headers=headers, params=params)
-
-        return response
-
-    def check_domain(self, allinfo: bool = False) -> Dict:
-        """Checks Domain reputation
-
-        :param allinfo: Default: False. Set True if you have VirusTotal Premium API Key
-        :return: dict of request response
-        """
-        url = f"{self.api_url}/domain/report"
-        response = self._api_get(url, "domain", self.domain, allinfo)
-
-        return response.json()
-
-    def check_hash(self, allinfo: bool = False, scan_id: str = None) -> Dict:
-        """Checks File Hash Reputation
-
-        :param allinfo: Default: False. Set True if you have VirusTotal Premium API Key
-        :param scan_id: Default: None. Set if you want to lookup by scan_id (returned by the /file/scan endpoint).
-        :return: dict of request response
-        """
-        url = f"{self.api_url}/file/report"
-        if self.file_hash:
-            response = self._api_get(url, "resource", self.file_hash, allinfo)
-        elif not self.file_hash and scan_id:
-            response = self._api_get(url, "resource", scan_id, allinfo)
-        else:
-            raise VirusTotalError(
-                "/file/report endpoint requires a valid MD5/SHA1/SHA256 hash or scan_id!"
-            )
-
-        return response.json()
-
-    def check_ip(self, allinfo: bool = False) -> Dict:
-        """Checks IP reputation
-
-        :param allinfo: Default: False. Set True if you have VirusTotal Premium API Key
-        :return: dict of request response
-        """
-        url = f"{self.api_url}/ip-address/report"
-        response = self._api_get(url, "ip", self.ip, allinfo)
-
-        return response.json()
-
-    def check_url(self, allinfo: bool = False, scan_id: str = None, scan: bool = None) -> Dict:
-        """Checks URL reputation
-
-        :param allinfo: Default: False. Set True if you have VirusTotal Premium API Key
-        :param scan_id: Default: None. Set if you want to lookup by scan_id (returned by the /url/scan endpoint).
-        :param scan: Default: None. Set True to submit URL for analysis if no report is found in VT database.
-        :return: dict of request response
-        """
-        url = f"{self.api_url}/url/report"
-        if self.url:
-            response = self._api_get(url, "resource", self.url, allinfo, scan)
-        elif not self.url and scan_id:
-            response = self._api_get(url, "resource", scan_id, allinfo, scan)
-        elif self.url and not scan_id and scan:
-            response = self._api_get(url, "resource", scan_id, allinfo, scan)
-            sid = response["scan_id"]
-            # sleep 5 seconds while VT scans URL before querying for results
-            time.sleep(5)
-            response = self._api_get(url, "resource", sid, allinfo, scan)
-        else:
-            raise VirusTotalError(
-                "/url/report endpoint requires a valid URL or scan_id!"
-            )
-
-        return response.json()
 
 
 class VirusTotalV3(Domain, FileHash, IPAddress, URL):
@@ -225,6 +117,7 @@ class VirusTotalV3(Domain, FileHash, IPAddress, URL):
         # TODO: file size checks
         #  - this endpoint allows <= 32mb
         #  - /files/upload_url allows 32mb >= FILE <= 650mb
+        #  add a timeout to the while loop so we don't sit here infinitely
         url = f"{self.api_url}/files"
         response = self._api_post(url=url, file_path=file_path, zip_pw=zip_pw)
         analysis_id = response.json()["data"]["id"]
