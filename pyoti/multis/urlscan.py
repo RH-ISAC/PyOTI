@@ -1,4 +1,6 @@
+import json
 import requests
+import time
 from typing import Dict, Optional
 from uuid import UUID
 
@@ -19,6 +21,31 @@ class URLscan(Domain, FileHash, IPAddress, URL):
         IPAddress.__init__(self,  api_key=api_key, api_url=api_url)
         URL.__init__(self, api_key=api_key, api_url=api_url)
 
+        self.countries = [
+            "de",
+            "us",
+            "jp",
+            "fr",
+            "gb",
+            "nl",
+            "ca",
+            "it",
+            "es",
+            "se",
+            "fi",
+            "dk",
+            "no",
+            "is",
+            "au",
+            "nz",
+            "pl",
+            "sg",
+            "ge",
+            "pt",
+            "at",
+            "ch"
+        ]
+
     @property
     def id(self):
         return self._id
@@ -33,11 +60,25 @@ class URLscan(Domain, FileHash, IPAddress, URL):
         :param endpoint: urlscan API endpoint
         :param params: params for request
         """
-        headers = {"User-Agent": f"PyOTI {__version__}"}
+        headers = {
+            "API-Key": self.api_key,
+            "User-Agent": f"PyOTI {__version__}"
+        }
         rparams = params
 
         uri = self.api_url + endpoint
         response = requests.request("GET", url=uri, headers=headers, params=rparams)
+
+        return response
+
+    def _api_post(self, endpoint: str, data: Optional[Dict]) -> requests.models.Response:
+        """POST request to urlscan API"""
+        headers = {
+            "API-Key": self.api_key,
+            "Content-Type": "application/json",
+            "User-Agent": f"PyOTI {__version__}"
+        }
+        response = requests.request("POST", url=endpoint, headers=headers, data=json.dumps(data))
 
         return response
 
@@ -147,3 +188,53 @@ class URLscan(Domain, FileHash, IPAddress, URL):
             raise PyOTIError("Missing result UUID. Use search_url method to get result UUID.")
 
         return response.json()
+
+    def submit_url(
+            self,
+            user_agent: Optional[str],
+            referer: Optional[str],
+            visibility: Optional[str],
+            country: Optional[str]
+    ) -> Dict:
+        """Submit a URL to be scanned and set some options for the scan
+
+        :param user_agent: Override User-Agent for this scan
+        :param referer: Override HTTP referer for this scan
+        :param visibility: One of [public, unlisted, private]. Defaults to your URLscan account configured default visibility
+        :param country: Specify which country the scan should be performed from (2-letter ISO-3166-1 alpha-2 country)
+        """
+        data = {"url": self.url}
+        if user_agent:
+            data["customagent"] = user_agent
+        if referer:
+            data["referer"] = referer
+        if visibility:
+            data["visibility"] = visibility
+        if country:
+            if country.lower() in self.countries:
+                data["country"] = country
+            else:
+                raise Exception(
+                    f"[!] {country} is not a valid entry. Please choose from the following list: {self.countries}"
+                )
+
+        response = self._api_post(endpoint=f"{self.api_url}/scan", data=data)
+
+        return response.json()
+
+    def get_submission_results(self, uuid: UUID) -> Dict:
+        start_time = time.time()
+        timeout = 180  # seconds
+
+        while True:
+            elapsed_time = time.time() - start_time
+
+            if elapsed_time > timeout:
+                # upper timeout reached
+                raise TimeoutError(f"Timeout reached while waiting on submission results for UUID: {uuid}")
+
+            response = self._api_get(endpoint=f"/result/{uuid}/", params=None)
+            if response.status_code == 404:
+                time.sleep(5)
+            elif response.status_code == 200:
+                return response.json()
