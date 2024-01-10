@@ -1,6 +1,6 @@
 Changelog
 =========
-v0.4.0 (2023-12-22)
+v0.4.0 (2024-01-10)
 -----------------
 
 Changes
@@ -21,6 +21,7 @@ New
 - Added Triage multis class
 - Added Stairwell multis class
 - Added URLscan class method to submit urls
+- Added check_ip and check_email class methods to WhoisXML
 ~~~~~~
 
 
