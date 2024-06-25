@@ -5,14 +5,14 @@ PyOTI is an API framework to easily query threat intel APIs to get fast, accurat
 
 
 
-| Indicator Types | APIs                                                                                                                                                                                     |
-|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Domains         | CheckDMARC, CIRCLPDNS, IrisInvestigate                                                                                                                                                   |
-| Email Addresses | DisposableEmails, EmailRepIO                                                                                                                                                             |
-| Hashes          | CIRCLHashLookup, MalwareBazaar, MalwareHashRegistry                                                                                                                                      |
-| IP Addresses    | AbuseIPDB, GreyNoise, SpamhausIntel                                                                                                                                                      |
-| URLs            | GoogleSafeBrowsing, LinkPreview, Phishtank, ProofpointURLDecoder                                                                                                                         |
-| Multis          | BinaryEdge, CIRCLPSSL, DNSBlockList, HybridAnalysis, MaltiverseIOC, MISP, Onyphe, OTX, Pulsedive, Stairwell, ThreatFox, Triage, URLhaus, URLscan, VirusTotalV3, WhoisXML, XForceExchange |
+| Indicator Types | APIs                                                                                                                                                                                                           |
+|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Domains         | CheckDMARC, CIRCLPDNS, IrisInvestigate                                                                                                                                                                         |
+| Email Addresses | DisposableEmails, EmailRepIO                                                                                                                                                                                   |
+| Hashes          | CIRCLHashLookup, MalwareBazaar, MalwareHashRegistry                                                                                                                                                            |
+| IP Addresses    | AbuseIPDB, GreyNoise, SpamhausIntel                                                                                                                                                                            |
+| URLs            | GoogleSafeBrowsing, LinkPreview, Phishtank, ProofpointURLDecoder                                                                                                                                               |
+| Multis          | BinaryEdge, CIRCLPSSL, DNSBlockList, HybridAnalysis, IP2Location/IP2WHOIS, MaltiverseIOC, MISP, Onyphe, OTX, Pulsedive, Stairwell, ThreatFox, Triage, URLhaus, URLscan, VirusTotalV3, WhoisXML, XForceExchange |
 
 ***
 ## Installing via pip

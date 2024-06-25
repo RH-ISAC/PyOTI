@@ -2,6 +2,7 @@ from .binaryedge import BinaryEdge
 from .circlpssl import CIRCLPSSL
 from .dnsblocklist import DNSBlockList
 from .hybridanalysis import HybridAnalysis
+from .ip2location import IP2Location, IP2WHOIS
 from .maltiverseioc import MaltiverseIOC
 from .misp import MISP
 from .onyphe import Onyphe
