@@ -13,4 +13,5 @@ from .triage import Triage
 from .urlhaus import URLhaus
 from .urlscan import URLscan
 from .virustotal import VirusTotalV3
+from .whoisxml import WhoisXML
 from .xforce import XForceExchange

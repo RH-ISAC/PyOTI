@@ -1,5 +1,5 @@
 import requests
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 from pyoti import __version__
 from pyoti.classes import Domain, FileHash, IPAddress
@@ -16,7 +16,7 @@ class Stairwell(Domain, FileHash, IPAddress):
         FileHash.__init__(self, api_key, api_url)
         IPAddress.__init__(self, api_key, api_url)
 
-    def _api_get(self, endpoint: str, params: Optional[Dict]) -> requests.models.Response:
+    def _api_get(self, endpoint: str, params: Optional[Dict] = None) -> requests.models.Response:
         """GET request to Stairwell API
 
         :param endpoint: Stairwell API endpoint
@@ -42,15 +42,7 @@ class Stairwell(Domain, FileHash, IPAddress):
         return response.json()
 
     def check_hash(self) -> Dict:
-        params = {}
-        if len(self.file_hash) == 32:
-            params['filter'] = f'object.md5 == "{self.file_hash}"'
-        elif len(self.file_hash) == 40:
-            params['filter'] = f'object.sha1 == "{self.file_hash}"'
-        elif len(self.file_hash) == 64:
-            params['filter'] = f'object.sha256 == "{self.file_hash}"'
-
-        response = self._api_get(endpoint='/objects/metadata', params=params)
+        response = self._api_get(endpoint=f'/objects/{self.file_hash}/metadata')
 
         return response.json()
 
@@ -59,3 +51,31 @@ class Stairwell(Domain, FileHash, IPAddress):
         response = self._api_get(endpoint='/objects/metadata', params=params)
 
         return response.json()
+
+    def query_objects(self, query: str, page_size: int = None) -> List[Dict]:
+        """
+        Fetches a list of object metadata. Objects returned match the filter specified in the request.
+
+        :param query: CEL string filter which objects must match. https://help.stairwell.com/en/knowledge/how-do-i-write-a-cel-query
+        :param page_size: The maximum number of objects to return. The service may return fewer than this value. If unspecified, at most 50 objects will be returned. The maximum value is 1000; values above 1000 will be coerced to 1000.
+        """
+        # TODO: async requests would likely speed this up significantly
+        all_objects = []
+        next_page_token = None
+
+        while True:
+            params = {
+                'filter': query,
+                'pageSize': page_size,
+                'pageToken': next_page_token
+            }
+            response = self._api_get(endpoint='/objects/metadata', params=params)
+            data = response.json()
+            object_metadatas = data.get('objectMetadatas', [])
+            all_objects.extend(object_metadatas)
+
+            next_page_token = data.get('nextPageToken')
+            if not next_page_token:
+                break
+
+        return all_objects
