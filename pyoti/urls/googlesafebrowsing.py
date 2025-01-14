@@ -19,7 +19,7 @@ class GoogleSafeBrowsing(URL):
     ):
         URL.__init__(self, api_key, api_url)
 
-    def _api_post(self, endpoint: str, platforms: List[str]) -> requests.models.Response:
+    def _api_post(self, endpoint: str, platforms: List[str], **kwargs) -> requests.models.Response:
         """POST request to API
 
         :param endpoint: API URL
@@ -27,6 +27,13 @@ class GoogleSafeBrowsing(URL):
         https://developers.google.com/safe-browsing/v4/reference/rest/v4/PlatformType
         :return: dict of request response
         """
+        if kwargs.get('url_list'):
+            threat_entries = []
+            for url in kwargs.get('url_list'):
+                threat_entries.append({"url": url})
+        else:
+            threat_entries = [{"url": self.url}]
+
         data = {
             "client": {"clientId": "PyOTI", "clientVersion": f"{__version__}"},
             "threatInfo": {
@@ -39,7 +46,7 @@ class GoogleSafeBrowsing(URL):
                 ],
                 "platformTypes": platforms,
                 "threatEntryTypes": ["URL"],
-                "threatEntries": [{"url": self.url}],
+                "threatEntries": threat_entries,
             },
         }
 
@@ -69,6 +76,29 @@ class GoogleSafeBrowsing(URL):
         error_code = [400, 403, 429, 500, 503, 504]
 
         response = self._api_post(self.api_url, platforms)
+
+        if response.status_code == 200:
+            if response.json() == {}:
+                r = {'matches': []}
+                return r
+            else:
+                return response.json()
+
+        elif response.status_code in error_code:
+            r = {'error': response.json()["error"]["message"]}
+            return r
+
+    def bulk_check_url(self, url_list: List[str], platforms: List[str] = ["ANY_PLATFORM"]) -> Dict:
+        """Bulk check URL reputation
+
+        :param url_list: List or URLs to check reputation
+        :param platforms: Default: ANY_PLATFORM. For all available options please see:
+        https://developers.google.com/safe-browsing/v4/reference/rest/v4/PlatformType
+        :return: dict of request response
+        """
+        error_code = [400, 403, 429, 500, 503, 504]
+
+        response = self._api_post(self.api_url, platforms, url_list=url_list)
 
         if response.status_code == 200:
             if response.json() == {}:

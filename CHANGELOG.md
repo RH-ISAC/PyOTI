@@ -1,5 +1,34 @@
 Changelog
 =========
+v0.4.0 (2025-01-14)
+-----------------
+
+Changes
+~~~~~~~
+- Bumped PyOTI version
+- Updated README.md
+- Removed old VirusTotalV2 multis class
+~~~~~~~
+
+New
+~~~~~~
+- Added BinaryEdge multis class
+- Added bulk hash check CIRCLHashLookup method and exception
+- Added bulk hash check IrisInvestigate method
+- Added bulk quick and bulk context check GreyNoise methods
+- Added bulk url check GoogleSafeBrowsing method
+- Added upload file VirusTotalV3 method
+- Added Triage multis class
+- Added Stairwell multis class
+- Added URLscan class method to submit urls
+- Added check_ip and check_email class methods to WhoisXML
+- Added IP2WHOIS and IP2Location multis classes
+- Added FileScanIO and MetaDefenderCloudV4 multi classes
+- Added JoeSandbox multi class
+- Added CiscoUmbrellaInvestigate multi class
+~~~~~~
+
+
 v0.3.3.2 (2023-02-22)
 ---------------------
 
