@@ -1,5 +1,24 @@
 Changelog
 =========
+v0.4.1 (2026-06-04)
+
+Changes
+~~~~~~~
+- Moved renamed irisinvestigate.py to domaintools.py (added new class)
+- Moved googlesafebrowsing from urls to multis (added support for querying domains and sha256 hashes)
+- Update CheckDMARC to handle aiodns/pycares major version changes
+- Updated GreyNoise to use all v3 endpoints as v2 endpoints are deprecated
+- Updated ThreatFox to use updated authentication key header and typo in api url
+- Updated URLhaus to use authentication key header
+~~~~~~~
+
+New
+~~~~~~~
+- Added DomainToolsRiskScore domain class
+- Added domain and sha256 hash lookups in GoogleSafeBrowsing
+~~~~~~~
+
+
 v0.4.0 (2025-01-14)
 -----------------
 
