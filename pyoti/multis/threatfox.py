@@ -12,7 +12,7 @@ class ThreatFox(Domain, FileHash, IPAddress, URL):
     ThreatFox is a free platform from abuse.ch with the goal of sharing indicators of compromise (IOCs) associated with
     malware with the infosec community, AV vendors and threat intelligence providers
     """
-    def __init__(self, api_key: str, api_url: str = "https://threatfox-api.abuse.ch/api/v1"):
+    def __init__(self, api_key: str, api_url: str = "https://threatfox-api.abuse.ch/api/v1/"):
         Domain.__init__(self, api_key=api_key, api_url=api_url)
         FileHash.__init__(self, api_key=api_key, api_url=api_url)
         IPAddress.__init__(self, api_key=api_key, api_url=api_url)
@@ -21,7 +21,7 @@ class ThreatFox(Domain, FileHash, IPAddress, URL):
     def _api_post(self, data) -> requests.models.Response:
         """POST request to ThreatFox API"""
         headers = {
-            "API-KEY": self.api_key,
+            "Auth-Key": self.api_key,
             "Content-Type": "application/json",
             "User-Agent": f"PyOTI {__version__}"
         }
