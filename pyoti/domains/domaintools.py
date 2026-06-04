@@ -1,12 +1,59 @@
 import hmac
 import hashlib
 import requests
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List
 from urllib.parse import urlsplit
 
 from pyoti import __version__
 from pyoti.classes import Domain
+
+
+class DomainToolsRiskScore(Domain):
+    """
+    Domain Risk Score predicts the likelihood of a domain to be used for malicious purposes based on its current state and related data.
+
+    ref: https://docs.domaintools.com/riskscore/
+    """
+    def __init__(self, api_key: str, api_url: str = "https://api.domaintools.com/v1/risk/"):
+        """
+        :param api_key: Domaintools API key in 'USER:SECRET' format
+        :param api_url: Domaintools API url
+        """
+        Domain.__init__(self, api_key, api_url)
+
+    def _api_post(self) -> requests.models.Response:
+        """POST request to DomainTools Domain Risk API
+
+        :return: requests response
+        """
+        creds = self.api_key.split(':')
+        timestamp = datetime.now(tz=timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+        param = ''.join([creds[0], timestamp, urlsplit(self.api_url).path])
+        signature = hmac.new(creds[1].encode('utf-8'), param.encode('utf-8'), digestmod=hashlib.sha256).hexdigest()
+
+        headers = {"User-Agent": f"PyOTI {__version__}"}
+
+        params = {
+            'api_username': creds[0],
+            'signature': signature,
+            'timestamp': timestamp,
+            'domain': self.domain
+        }
+
+        response = requests.request("POST", url=self.api_url, headers=headers, params=params)
+
+        return response
+
+    def check_domain(self) -> Dict:
+        """Checks domain risk score
+
+        :return: dict containing results from request response
+        """
+        response = self._api_post()
+        r = response.json().get('response')
+
+        return r
 
 
 class IrisInvestigate(Domain):
@@ -27,7 +74,7 @@ class IrisInvestigate(Domain):
         :return: dict of request response
         """
         creds = self.api_key.split(":")
-        timestamp = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
+        timestamp = datetime.now(tz=timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
         param = ''.join([creds[0], timestamp, urlsplit(self.api_url).path])
         signature = hmac.new(creds[1].encode('utf-8'), param.encode('utf-8'), digestmod=hashlib.sha256).hexdigest()
 

@@ -3,6 +3,7 @@ from .circlpssl import CIRCLPSSL
 from .ciscoumbrella import CiscoUmbrellaInvestigate
 from .dnsblocklist import DNSBlockList
 from .filescanio import FileScanIO
+from .googlesafebrowsing import GoogleSafeBrowsing
 from .hybridanalysis import HybridAnalysis
 from .ip2location import IP2Location, IP2WHOIS
 from .joesandbox import JoeSandbox
