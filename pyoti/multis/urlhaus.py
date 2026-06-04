@@ -12,16 +12,16 @@ class URLhaus(Domain, FileHash, IPAddress, URL):
     URLhaus is a project from abuse.ch with the goal of collecting, tracking,
     and sharing malicious URLs that are being used for malware distribution.
     """
-    def __init__(self, api_url: str = "https://urlhaus-api.abuse.ch/v1", url_id: Optional[str] = None):
+    def __init__(self, api_key: str, api_url: str = "https://urlhaus-api.abuse.ch/v1", url_id: Optional[str] = None):
         """
         :param api_url: URLhaus API URL
         :param url_id: search by URLhaus urlid
         """
         self._url_id = url_id
-        Domain.__init__(self, api_url=api_url)
-        FileHash.__init__(self, api_url=api_url)
-        IPAddress.__init__(self, api_url=api_url)
-        URL.__init__(self, api_url=api_url)
+        Domain.__init__(self, api_key=api_key, api_url=api_url)
+        FileHash.__init__(self, api_key=api_key, api_url=api_url)
+        IPAddress.__init__(self, api_key=api_key, api_url=api_url)
+        URL.__init__(self, api_key=api_key, api_url=api_url)
 
     @property
     def url_id(self):
@@ -33,7 +33,10 @@ class URLhaus(Domain, FileHash, IPAddress, URL):
 
     def _api_post(self, url: str, data: Dict) -> requests.models.Response:
         """POST request to API"""
-        headers = {"User-Agent": f"PyOTI {__version__}"}
+        headers = {
+            "Auth-Key": self.api_key,
+            "User-Agent": f"PyOTI {__version__}"
+        }
 
         response = requests.request("POST", url=url, data=data, headers=headers)
 
