@@ -10,7 +10,7 @@ PyOTI is an API framework to easily query threat intel APIs to get fast, accurat
 | Domains         | CheckDMARC, CIRCLPDNS, DomainToolsRiskScore, IrisInvestigate                                                                                                                                                                                                                                              |
 | Email Addresses | DisposableEmails, EmailRepIO                                                                                                                                                                                                                                                                              |
 | Hashes          | CIRCLHashLookup, MalwareBazaar, MalwareHashRegistry                                                                                                                                                                                                                                                       |
-| IP Addresses    | AbuseIPDB, GreyNoise, SpamhausIntel                                                                                                                                                                                                                                                                       |
+| IP Addresses    | AbuseIPDB, GreyNoise, SpamhausIntel, SpurIPIntel                                                                                                                                                                                                                                                          |
 | URLs            | LinkPreview, Phishtank, ProofpointURLDecoder                                                                                                                                                                                                                                                              |
 | Multis          | BinaryEdge, CIRCLPSSL, CiscoUmbrellaInvestigate, DNSBlockList, FileScanIO, GoogleSafeBrowsing, HybridAnalysis, IP2Location/IP2WHOIS, JoeSandbox, MaltiverseIOC, MetaDefenderCloudV4, MISP, Onyphe, OTX, Pulsedive, Stairwell, ThreatFox, Triage, URLhaus, URLscan, VirusTotalV3, WhoisXML, XForceExchange |
 
@@ -35,7 +35,7 @@ Linux instructions can be found in the docs directory [here](https://github.com/
 For a quick tutorial on the ease and benefit of using PyOTI you can view the Phishing URL Triage Jupyter Notebook [here](https://github.com/RH-ISAC/PyOTI/blob/main/docs/tutorials/phishing_triage_urls.ipynb).
 ***
 ## License
-Copyright © 2021-2025, RH-ISAC 
+Copyright © 2021-2026, RH-ISAC 
 
 This work is free software. You may redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or
 at your option, any later version.
