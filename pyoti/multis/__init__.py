@@ -10,6 +10,7 @@ from .joesandbox import JoeSandbox
 from .maltiverseioc import MaltiverseIOC
 from .metadefendercloud import MetaDefenderCloudV4
 from .misp import MISP
+from .netapi import NetAPI
 from .onyphe import Onyphe
 from .otx import OTX
 from .pulsedive import Pulsedive
