@@ -1,6 +1,5 @@
 import aiodns
 import asyncio
-import pycares
 import sys
 from typing import Dict, List, Union
 
@@ -159,12 +158,12 @@ class DNSBlockList(Domain, IPAddress):
         """
         return ".".join(reversed(ipaddr.split(".")))
 
-    def _a_query(self, blocklist: str, type: str) -> Union[List[pycares.ares_query_a_result], None]:
+    def _a_query(self, blocklist: str, type: str) -> Union[List, None]:
         """DNS A record query
 
          :param blocklist: DNS blocklist URL
          :param type: ip or domain
-         :return: list of ares_query_a_result
+         :return: list of A record results
          """
         try:
             if sys.platform == "win32":

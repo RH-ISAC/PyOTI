@@ -1,6 +1,5 @@
 import aiodns
 import asyncio
-import pycares
 import re
 import sys
 from typing import Dict, List
@@ -16,7 +15,7 @@ class CheckDMARC(Domain):
     def __init__(self, domain: str = None):
         Domain.__init__(self, domain=domain)
 
-    def query_txt(self, name: str) -> List[pycares.ares_query_txt_result]:
+    def query_txt(self, name: str) -> List:
         """Asynchronous DNS query for TXT record"""
         try:
             if sys.platform == "win32":
